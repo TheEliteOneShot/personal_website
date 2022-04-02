@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: theeliteoneshot/website-backend:latest
+    restart: always
+    ports:
+      - 5000:5000
+
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: database
+    restart: always
+    image: theeliteoneshot/website-database:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      # - ./sql/table.sql:/docker-entrypoint-initdb.d/table.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: theeliteoneshot/website-frontend:latest
+    ports:
+      - '80:80'
+
+volumes:
+  postgres_data:
+    name: postgres_data
