@@ -12,7 +12,15 @@ COPY .eslintrc.js ./
 COPY babel.config.js ./
 COPY . .
 
-# RUN npm run build
+ARG BACKEND_PORT
+ARG BACKEND_HOST
+ARG BACKEND_PROTOCOL
+ARG BACKEND_PREFIX
+RUN echo "VITE_API_BASE_PROTOCOL=\"${BACKEND_PROTOCOL}\"" >> ./.env
+RUN echo "VITE_API_BASE_HOST=\"${BACKEND_HOST}\"" >> ./.env
+RUN echo "VITE_API_BASE_PORT=\"${BACKEND_PORT}\"" >> ./.env
+RUN echo "VITE_API_BASE_PREFIX=\"${BACKEND_PREFIX}\"" >> ./.env
+
 RUN npm run build
 
 # production environment
