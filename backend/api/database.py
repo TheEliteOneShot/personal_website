@@ -11,10 +11,10 @@ import config
 
 global_settings = config.get_settings()
 # Async connection to a local SQLITE database
-url = "sqlite+aiosqlite:///./sql_app.db"
-
+db_url = f"postgresql+asyncpg://{global_settings.DATABASE_USER}:{global_settings.DATABASE_PASSWORD}@{global_settings.DATABASE_HOST}"
+print('Database Connection String: ', db_url)
 engine = create_async_engine(
-    url,
+    db_url,
     future=True,
     echo=True,
 )
