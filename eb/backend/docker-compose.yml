@@ -1,10 +1,7 @@
-version: '3.7'
+version: '3.8'
 
 services:
   database:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
     container_name: database
     restart: always
     image: theeliteoneshot/website-database:latest
@@ -19,9 +16,6 @@ services:
 
   backend:
     container_name: backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
     image: theeliteoneshot/website-backend:latest
     restart: always
     ports:
@@ -33,22 +27,6 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
       - database
-
-  frontend:
-    container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        BACKEND_PORT: ${BACKEND_PORT}
-        BACKEND_HOST: ${BACKEND_HOST}
-        BACKEND_PROTOCOL: ${BACKEND_PROTOCOL}
-        BACKEND_PREFIX: ${BACKEND_PREFIX}
-    image: theeliteoneshot/website-frontend:latest
-    ports:
-      - ${FRONTEND_PORT}:80
-    depends_on:
-      - backend
 
 volumes:
   postgres_data:

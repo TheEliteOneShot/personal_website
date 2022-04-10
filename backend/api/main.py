@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.nonsense import router as nonsense_router
 from routes.stuff import router as stuff_router
+from routes.healthcheck import router as healthcheck_router
 from database import engine
 from models.base import Base
 from config import get_settings
@@ -10,6 +11,7 @@ app = FastAPI(title=get_settings().API_TILE, version=get_settings().API_VERSION)
 
 app.include_router(stuff_router)
 app.include_router(nonsense_router)
+app.include_router(healthcheck_router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -24,8 +24,9 @@ class Settings(BaseSettings):
     API_TILE = "Example API"
     API_VERSION = 1.0
 
-    NONSENSE_API_PREFIX = "/v1/nonsense"
-    STUFF_API_PREFIX= "/v1/stuff"
+    NONSENSE_API_PREFIX = "/nonsense"
+    STUFF_API_PREFIX= "/stuff"
+    HEALTHCHECK_API_PREFIX = "/healthcheck"
 
     # CORS
     CORS_ORIGINS = [
