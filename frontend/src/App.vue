@@ -11,11 +11,10 @@ import "@/assets/scripts/box.icons.min.js"
     <div class="l-navbar" id="nav-bar">
         <nav class="nav">
         <div>
-            <a href="#" class="nav_logo"> <i class='bx bx-book-bookmark nav_logo-icon'></i> <span class="nav_logo-name">Demonstration</span> </a>
+            <router-link class="nav_link" to="/"><i class='bx bx-book-bookmark nav_logo-icon'></i> <span class="nav_logo-name">Zachary Laney</span></router-link>
             <div class="nav_list">
-                <router-link class="nav_link" to="/one"><i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Material Design</span></router-link>
-                <router-link class="nav_link" to="/two"><i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Toasts</span></router-link>
-                <router-link class="nav_link" to="/three"><i class='bx bx-data nav_icon'></i> <span class="nav_name">Full Stack</span></router-link>
+                <router-link class="nav_link" to="/Welcome"><i class='bx bx-grid-alt nav_icon router-link-active'></i> <span class="nav_name">Welcome Page</span></router-link>
+                <router-link class="nav_link" to="/FullStackTest"><i class='bx bx-data nav_icon'></i> <span class="nav_name">Full Stack Test</span></router-link>
             </div>
         </div>
         <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Sign Out</span> </a>
@@ -23,7 +22,11 @@ import "@/assets/scripts/box.icons.min.js"
     </div>
     <body id="body-pd">
         <div class="content-container height-100 bg-light">
-        <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <keep-alive include="FullStackTest">
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
         </div>
     </body>
 </template>

@@ -1,8 +1,8 @@
 :root {
   --header-height: 3rem;
   --nav-width: 68px;
-  --first-color: #00348c;
-  --first-color-light: #afa5d9;
+  --first-color: rgb(46, 46, 46);
+  --first-color-light: #ffffff;
   --white-color: #f7f6fb;
   --body-font: "Nunito", sans-serif;
   --normal-font-size: 1rem;
@@ -30,6 +30,15 @@ a {
 
 .routerLink {
   text-decoration: none;
+}
+
+.router-link-exact-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 32px;
+  background-color: #C4E0A5;
 }
 
 .header {
@@ -72,7 +81,7 @@ a {
   left: -30%;
   width: var(--nav-width);
   height: 100vh;
-  background-color: var(--first-color);
+  background-image: linear-gradient(to right top, #000000, #17000a, #210017, #260025, #260036, #260036, #260036, #260036, #260025, #210017, #17000a, #000000);
   padding: 0.5rem 1rem 0 0;
   transition: 0.5s;
   z-index: var(--z-fixed);
@@ -131,19 +140,6 @@ a {
 
 .body-pd {
   padding-left: calc(var(--nav-width) + 1rem);
-}
-
-.nav_item_active {
-  color: var(--white-color);
-}
-
-.nav_item_active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 2px;
-  height: 32px;
-  background-color: var(--white-color);
 }
 
 .content-container {

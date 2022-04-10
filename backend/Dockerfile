@@ -6,4 +6,7 @@ COPY Pipfile /api/Pipfile
 COPY Pipfile.lock /api/Pipfile.lock
 RUN pipenv install
 COPY ./api/ /api/
-CMD ["pipenv", "run", "uvicorn", "main:app", "--port", "5000", "--host", "0.0.0.0","--log-level", "error"]
+
+EXPOSE 443
+
+CMD ["pipenv", "run", "uvicorn", "main:app", "--port", "443", "--host", "0.0.0.0","--log-level", "error"]

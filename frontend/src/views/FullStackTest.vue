@@ -4,7 +4,7 @@ import { loadScript } from "vue-plugin-load-script";
 import agGridUrl from "@/assets/scripts/ag_grid_enterprise.min.js?url";
 
 export default defineComponent({
-  name: "Page3",
+  name: "FullStackTest",
   setup() {
     
     const app = getCurrentInstance().appContext.config.globalProperties;
@@ -151,16 +151,13 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      
       await loadScript(agGridUrl)
       .catch(() => {
         console.log(`AG Grid script failed to load.`)
       });
       const gridAddData = document.querySelector("#addRow");
       const gridDivServer = document.querySelector("#fullstack");
-      // onMounted is called each time a user navigates away and back. Find a different way to handle preventing the table from being mounted multiple times.
-      gridAddData.innerHTML = "";
-      gridDivServer.innerHTML = "";
+
 
       new agGrid.Grid(gridAddData, gridOptionsAddData);
       new agGrid.Grid(gridDivServer, gridOptionsServer);

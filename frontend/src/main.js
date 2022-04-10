@@ -18,7 +18,7 @@ app.use(LoadScript)
 
 // Add MDB components
 app.component('mdbButton', mdb.MDBBtn)
-app.component('mdbAcccordion', mdb.MDBAccordion)
+app.component('mdbAccordion', mdb.MDBAccordion)
 app.component('mdbAccordionItem', mdb.MDBAccordionItem)
 app.component('mdbBadge', mdb.MDBBadge)
 app.component('mdbBreadcrumb', mdb.MDBBreadcrumb)
