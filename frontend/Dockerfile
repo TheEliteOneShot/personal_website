@@ -24,11 +24,12 @@ RUN echo "VITE_API_BASE_PREFIX=\"${BACKEND_PREFIX}\"" >> ./.env
 RUN npm run build
 
 # production environment
-FROM nginx:1.19.6-alpine
+FROM nginx:1.21.6-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/conf.d
+RUN mkdir /etc/nginx/templates
+COPY nginx/templates/nginx.conf.template /etc/nginx/templates
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

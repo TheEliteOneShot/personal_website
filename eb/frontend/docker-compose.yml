@@ -6,3 +6,6 @@ services:
     image: theeliteoneshot/website-frontend:latest
     ports:
       - ${FRONTEND_PORT}:80
+    environment:
+      ORIGIN_DOMAIN: www.zacharylaney.com
+      ORIGIN_DOMAIN_PROTOCOL: https

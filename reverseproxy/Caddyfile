@@ -1,7 +1,19 @@
-*.example.com:5000 {
-    tls internal
-    reverse_proxy https://database:5000 {
-        header_up Host {upstream_hostport}
-        header_up X-Forwarded-Host {host}
+{$ORIGIN_DOMAIN}:80 {
+    log
+    reverse_proxy {
+        to backend:5000
+        header_down Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
+        header_down Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
+        header_down Access-Control-Allow-Origin {$ORIGIN_DOMAIN_PROTOCOL}://{$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
     }
+    header -Server
+    header Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
+    header Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
+    header Access-Control-Allow-Origin {$ORIGIN_DOMAIN_PROTOCOL}://{$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
+}
+
+:80 {
+    log
+    header -Server
+    redir {$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
 }
