@@ -1,19 +1,27 @@
-{$ORIGIN_DOMAIN}:80 {
-    log
-    reverse_proxy {
-        to backend:5000
-        header_down Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
-        header_down Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
-        header_down Access-Control-Allow-Origin {$ORIGIN_DOMAIN_PROTOCOL}://{$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
-    }
-    header -Server
-    header Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
-    header Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
-    header Access-Control-Allow-Origin {$ORIGIN_DOMAIN_PROTOCOL}://{$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
-}
-
 :80 {
-    log
+    log {
+        format json
+	    output file /logs/access.log
+    }
+
+    # Remove the Server header for security
     header -Server
-    redir {$ORIGIN_DOMAIN}:{$ORIGIN_DOMAIN_PORT}
+
+    @allowedOrigin {
+    header_regexp Origin https:\/\/www(\.{$ORIGIN_DOMAIN}\.com)(:[0-9]+)?$
+    }
+    
+	handle @allowedOrigin {
+        reverse_proxy {
+            to backend:5000
+            header_down Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
+            header_down Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
+            header_down Access-Control-Allow-Origin {http.request.header.Origin}
+        }
+    }
+
+	# Fallback for otherwise unhandled domains
+	handle {
+        redir https://www.{$ORIGIN_DOMAIN}.com
+	}
 }

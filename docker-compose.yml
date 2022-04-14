@@ -49,8 +49,6 @@ services:
       - backend
     environment:
       ORIGIN_DOMAIN: ${ORIGIN_DOMAIN}
-      ORIGIN_DOMAIN_PROTOCOL: ${ORIGIN_DOMAIN_PROTOCOL}
-      ORIGIN_DOMAIN_PORT: ${ORIGIN_DOMAIN_PORT}
       ORIGIN_ALLOW_METHOD: ${ORIGIN_ALLOW_METHOD}
       ORIGIN_ALLOW_CREDENTIALS: ${ORIGIN_ALLOW_CREDENTIALS}
     ports:
@@ -76,10 +74,9 @@ services:
         BACKEND_HOST: api.zacharylaney.com
         BACKEND_PROTOCOL: https
         BACKEND_PREFIX: ${BACKEND_PREFIX}
+        
     environment:
       ORIGIN_DOMAIN: ${ORIGIN_DOMAIN}
-      ORIGIN_DOMAIN_PROTOCOL: ${ORIGIN_DOMAIN_PROTOCOL}
-
     image: theeliteoneshot/website-frontend:latest
     ports:
       - ${FRONTEND_PORT}:80

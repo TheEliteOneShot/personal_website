@@ -1,23 +1,24 @@
 server {
+  server_tokens off;
+
   listen 80;
   listen [::]:80;
-  server_name ${ORIGIN_DOMAIN}
-  add_header 'Access-Control-Max-Age' 1728000;
-  add_header 'Access-Control-Allow-Origin' '${ORIGIN_DOMAIN_PROTOCOL}://${ORIGIN_DOMAIN}';
-  add_header 'Access-Control-Allow-Credentials' 'true';
-  add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE';
-  add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+  server_name www.${ORIGIN_DOMAIN}.com;
+
   location / {
     root   /usr/share/nginx/html;
     index  index.html index.htm;
     try_files $uri $uri/ /index.html;
   }
-
 }
 
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name _;
-    return 301 https://${ORIGIN_DOMAIN}$request_uri;
+  server_tokens off;
+
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  server_name _;
+
+  return 301 https://www.${ORIGIN_DOMAIN}.com$request_uri;
 }
