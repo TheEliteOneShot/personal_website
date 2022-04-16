@@ -1,0 +1,39 @@
+server {
+  server_tokens off;
+
+  listen 80;
+  listen [::]:80;
+  server_name localhost;
+
+  location = /healthcheck {
+            access_log off;
+            add_header 'Content-Type' 'application/json';
+            return 200 '{"status":"UP"}';
+  }
+
+  location / {
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+    try_files $uri $uri/ /index.html;
+  }
+
+}
+
+server {
+  server_tokens off;
+
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  server_name _;
+
+  location = /healthcheck {
+              access_log off;
+              add_header 'Content-Type' 'application/json';
+              return 200 '{"status":"UP"}';
+  }
+
+  location / {
+      return 301 http://localhost$request_uri;
+  }
+}

@@ -14,12 +14,12 @@ services:
     image: theeliteoneshot/website-database:latest
     networks:
       - backend
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   backend:
     container_name: backend
@@ -40,7 +40,7 @@ services:
     
   reverseproxy:
     build:
-      context: ./reverseproxy
+      context: ./reverseproxy/production
       dockerfile: Dockerfile
     container_name: reverseproxy
     restart: always
@@ -53,8 +53,34 @@ services:
       ORIGIN_ALLOW_CREDENTIALS: ${ORIGIN_ALLOW_CREDENTIALS}
     ports:
       - ${REVERSEPROXY_PORT}:80
-    depends_on:
+    # depends_on:
+    #   - backend
+
+  iam:
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    container_name: iam
+    image: theeliteoneshot/website-iam:latest
+    networks:
       - backend
+    environment:
+        DB_VENDOR: postgres
+        DB_ADDR: database
+        DB_DATABASE: postgres
+        DB_PORT: 5432
+        DB_USER: postgres
+        DB_SCHEMA: public
+        DB_PASSWORD: password
+        KEYCLOAK_LOGLEVEL: ${IAM_LOGLEVEL}
+        ROOT_LOGLEVEL: ${IAM_ROOT_LOGLEVEL}
+        KEYCLOAK_USER: ${IAM_USER}
+        KEYCLOAK_PASSWORD: ${IAM_PASSWORD}
+        PROXY_ADDRESS_FORWARDING: "true"
+    depends_on:
+      - database
+    volumes:
+      - ./keycloak/realms/export:/tmp/export
 
   frontend:
     container_name: frontend
@@ -62,14 +88,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-
-        # Development
-        # BACKEND_PORT: ${REVERSEPROXY_PORT}
-        # BACKEND_HOST: ${REVERSEPROXY_HOST}
-        # BACKEND_PROTOCOL: ${REVERSEPROXY_PROTOCOL}
-        # BACKEND_PREFIX: ${REVERSEPROXY_PREFIX}
-
-        # Production
         BACKEND_PORT: 443
         BACKEND_HOST: api.zacharylaney.com
         BACKEND_PROTOCOL: https
@@ -82,7 +100,3 @@ services:
       - ${FRONTEND_PORT}:80
     depends_on:
       - reverseproxy
-
-volumes:
-  postgres_data:
-    name: postgres_data

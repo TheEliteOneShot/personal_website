@@ -1,0 +1,26 @@
+version: '3.8'
+
+networks:
+  backend:
+
+services:
+
+  reverseproxy:
+    build:
+      context: ./reverseproxy/development
+      dockerfile: Dockerfile
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerfileDev
+      args:
+        # Development
+        BACKEND_PORT: ${REVERSEPROXY_PORT}
+        BACKEND_HOST: ${REVERSEPROXY_HOST}
+        BACKEND_PROTOCOL: ${REVERSEPROXY_PROTOCOL}
+        BACKEND_PREFIX: ${REVERSEPROXY_PREFIX}
+
+volumes:
+  postgres_data:
+    name: postgres_data

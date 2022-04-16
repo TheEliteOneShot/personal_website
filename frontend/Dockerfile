@@ -29,7 +29,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf
 RUN mkdir /etc/nginx/templates
-COPY nginx/templates/nginx.conf.template /etc/nginx/templates
+COPY nginx/production/templates/nginx.conf.template /etc/nginx/templates
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

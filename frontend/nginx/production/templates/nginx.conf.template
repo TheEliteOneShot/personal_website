@@ -4,12 +4,13 @@ server {
   listen 80;
   listen [::]:80;
   server_name www.${ORIGIN_DOMAIN}.com;
-
+  
   location / {
     root   /usr/share/nginx/html;
     index  index.html index.htm;
     try_files $uri $uri/ /index.html;
   }
+
 }
 
 server {
@@ -20,5 +21,13 @@ server {
 
   server_name _;
 
-  return 301 https://www.${ORIGIN_DOMAIN}.com$request_uri;
+  location = /healthcheck {
+              access_log off;
+              add_header 'Content-Type' 'application/json';
+              return 200 '{"status":"UP"}';
+  }
+
+  location / {
+      return 301 https://www.${ORIGIN_DOMAIN}.com$request_uri;
+  }
 }

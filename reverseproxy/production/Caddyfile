@@ -6,6 +6,10 @@
 
     # Remove the Server header for security
     header -Server
+    
+    handle /iam/* {
+        reverse_proxy iam:8080
+    }
 
     @allowedOrigin {
     header_regexp Origin https:\/\/www(\.{$ORIGIN_DOMAIN}\.com)(:[0-9]+)?$
@@ -20,8 +24,11 @@
         }
     }
 
-	# Fallback for otherwise unhandled domains
-	handle {
-        redir https://www.{$ORIGIN_DOMAIN}.com
-	}
+    handle /healthcheck {
+        respond "OK" 200
+    }
+
+    handle {
+        abort
+    }
 }
