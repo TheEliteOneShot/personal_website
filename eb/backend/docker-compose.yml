@@ -32,32 +32,7 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
       - database
-
-  iam:
-    container_name: iam
-    image: theeliteoneshot/website-iam:latest
-    networks:
-      - backend
-    environment:
-        DB_VENDOR: postgres
-        DB_ADDR: database
-        DB_DATABASE: postgres
-        DB_PORT: 5432
-        DB_USER: postgres
-        DB_SCHEMA: public
-        DB_PASSWORD: password
-        KEYCLOAK_LOGLEVEL: ${IAM_LOGLEVEL}
-        ROOT_LOGLEVEL: ${IAM_ROOT_LOGLEVEL}
-        KEYCLOAK_USER: ${IAM_USER}
-        KEYCLOAK_PASSWORD: ${IAM_PASSWORD}
-        PROXY_ADDRESS_FORWARDING: "true"
-    ports:
-      - ${IAM_PORT}:8080
-    depends_on:
-      - reverseproxy
-    volumes:
-      - ./keycloak_export:/tmp/export
-    
+ 
   reverseproxy:
     container_name: reverseproxy
     restart: always
@@ -71,4 +46,4 @@ services:
     ports:
       - ${REVERSEPROXY_PORT}:80
     depends_on:
-      - iam
+      - backend

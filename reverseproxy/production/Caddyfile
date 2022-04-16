@@ -7,10 +7,6 @@
     # Remove the Server header for security
     header -Server
     
-    handle /iam/* {
-        reverse_proxy iam:8080
-    }
-
     @allowedOrigin {
     header_regexp Origin https:\/\/www(\.{$ORIGIN_DOMAIN}\.com)(:[0-9]+)?$
     }
