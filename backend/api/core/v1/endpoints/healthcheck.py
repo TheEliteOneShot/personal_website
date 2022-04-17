@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from config import get_settings
+from core.config import get_settings
 
 API_PREFIX = get_settings().HEALTHCHECK_API_PREFIX
 

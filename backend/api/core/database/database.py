@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from typing import Dict
-import config
+import core.config as config
 
 global_settings = config.get_settings()
 # Async connection to a local SQLITE database

@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from database import get_db
-from models.stuff import Stuff, Stuffs
-from schemas.stuff import StuffResponse, StuffSchema
-from config import get_settings
+from core.database.database import get_db
+from core.models.stuff import Stuff, Stuffs
+from core.schemas.stuff import StuffResponse, StuffSchema
+from core.config import get_settings
 
 API_PREFIX = get_settings().STUFF_API_PREFIX
 

@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy import Column, Integer, String, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.base import Base
+from core.models.base import Base
 
 class Nonsense(Base):
     __tablename__ = "nonsense"

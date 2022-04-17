@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from typing import List
 from sqlalchemy import Column, Integer, String, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.base import Base
+from core.models.base import Base
 
 class Stuff(Base):
     __tablename__ = "stuff"

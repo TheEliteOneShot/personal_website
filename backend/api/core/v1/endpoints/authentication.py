@@ -1,11 +1,11 @@
 from datetime import timedelta
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from config import get_settings
-from database import get_fake_user_db
-from schemas.auth.token import Token
-from models.auth.user import User
-from methods.authentication import authenticate_user, create_access_token, get_current_active_user
+from core.config import get_settings
+from core.database.database import get_fake_user_db
+from core.schemas.auth.token import Token
+from core.models.auth.user import User
+from core.internal.methods.authentication import authenticate_user, create_access_token, get_current_active_user
 
 API_PREFIX = get_settings().AUTHENTICATION_API_PREFIX
 
