@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     DATABASE_PORT = os.getenv('DATABASE_PORT')
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+    DATABASE_URL = f"postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}"
 
     API_TILE = "Example API"
     API_VERSION = 1.0

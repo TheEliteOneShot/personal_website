@@ -55,3 +55,4 @@ class Base:
         for k, v in kwargs.items():
             setattr(self, k, v)
         await self.save(db_session)
+
