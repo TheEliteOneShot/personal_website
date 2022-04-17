@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.database.database import get_db
+from core.internal.database.methods import get_db
 from core.models.nonsense import Nonsense
-from core.schemas.nnonsense import NonsenseResponse, NonsenseSchema
+from core.schemas.nonsense import NonsenseResponse, NonsenseSchema
 from core.config import get_settings
 
 API_PREFIX = get_settings().NONSENSE_API_PREFIX

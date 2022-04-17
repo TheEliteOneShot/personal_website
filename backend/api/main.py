@@ -4,7 +4,7 @@ from core.v1.endpoints.nonsense import router as nonsense_router
 from core.v1.endpoints.stuff import router as stuff_router
 from core.v1.endpoints.authentication import router as authentication_router
 from core.v1.endpoints.healthcheck import router as healthcheck_router
-from core.database.database import engine
+from core.internal.database.methods import engine
 from core.models.base import Base
 from core.config import get_settings
 

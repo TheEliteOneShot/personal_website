@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from core.database.database import get_db
+from core.internal.database.methods import get_db
 from core.models.stuff import Stuff, Stuffs
 from core.schemas.stuff import StuffResponse, StuffSchema
 from core.config import get_settings

@@ -3,7 +3,7 @@ from jose import JWTError, jwt
 from typing import Optional
 from datetime import datetime, timedelta
 from core.models.auth.user import UserInDB, User
-from core.database.database import get_fake_user_db
+from core.internal.database.methods import get_fake_user_db
 from core.config import get_settings
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
