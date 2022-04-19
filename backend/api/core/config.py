@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     instance of Settings
 
     """
+    LOGGING_LEVEL="DEBUG"
 
-    
     SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -29,10 +29,11 @@ class Settings(BaseSettings):
     API_TILE = "Example API"
     API_VERSION = 1.0
 
+    USER_API_PREFIX = "/user"
     AUTHENTICATION_API_PREFIX = "/auth"
-    NONSENSE_API_PREFIX = "/nonsense"
-    STUFF_API_PREFIX= "/stuff"
     HEALTHCHECK_API_PREFIX = "/healthcheck"
+
+    NEW_USER_ENABLED_BY_DEFAULT=True
 
     # CORS
     CORS_ORIGINS = [

@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from core.config import get_settings
 from core.api.deps import get_db, get_current_active_user
 from core.schemas.auth.token import Token
-from core.schemas.auth import UserSchema, UserResponse
+from core.schemas.common import UserSchema, UserResponse
 from core.internal.auth import authenticate_user, create_access_token
 
 API_PREFIX = get_settings().AUTHENTICATION_API_PREFIX
@@ -25,7 +25,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
 
 @router.get("/users/me/", response_model=UserResponse)
 async def read_users_me(current_user: UserSchema = Depends(get_current_active_user)):
