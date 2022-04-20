@@ -58,7 +58,7 @@ class UserModel(Base):
 
         :param db_session:
         :param username:
-        :return User:
+        :return UserModel:
         """
         stmt = select(cls).where(cls.username == username)
         result = await db_session.execute(stmt)
@@ -70,7 +70,7 @@ class UserModel(Base):
 
         :param db_session:
         :param id:
-        :return User:
+        :return UserModel:
         """
         stmt = select(cls).where(cls.id == id)
         result = await db_session.execute(stmt)
@@ -89,7 +89,7 @@ class UserModel(Base):
         """
 
         :param db_session:
-        :return:
+        :return list[UserModel]:
         """
         stmt = select(cls)
         return await db_session.execute(stmt)

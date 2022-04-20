@@ -29,9 +29,10 @@ class Settings(BaseSettings):
     API_TILE = "Example API"
     API_VERSION = 1.0
 
-    USER_API_PREFIX = "/user"
-    AUTHENTICATION_API_PREFIX = "/auth"
-    HEALTHCHECK_API_PREFIX = "/healthcheck"
+    API_ROOT_PATH = "/api/v1"
+    USER_API_PREFIX = API_ROOT_PATH + "/user"
+    AUTHENTICATION_API_PREFIX = API_ROOT_PATH + "/auth"
+    HEALTHCHECK_API_PREFIX = API_ROOT_PATH + "/healthcheck"
 
     NEW_USER_ENABLED_BY_DEFAULT=True
 
