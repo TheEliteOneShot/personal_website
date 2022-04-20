@@ -21,7 +21,6 @@ body {
   padding: 0 1rem;
   font-family: var(--body-font);
   font-size: var(--normal-font-size);
-  transition: 0.5s;
 }
 
 a {
@@ -53,7 +52,6 @@ a {
   padding: 0 1rem;
   background-color: var(--white-color);
   z-index: var(--z-fixed);
-  transition: 0.5s;
 }
 
 .header_toggle {
@@ -83,7 +81,6 @@ a {
   height: 100vh;
   background-image: linear-gradient(to right top, #000000, #17000a, #210017, #260025, #260036, #260036, #260036, #260036, #260025, #210017, #17000a, #000000);
   padding: 0.5rem 1rem 0 0;
-  transition: 0.5s;
   z-index: var(--z-fixed);
 }
 
@@ -123,7 +120,6 @@ a {
   position: relative;
   color: var(--first-color-light);
   margin-bottom: 1.5rem;
-  transition: 0.3s;
 }
 
 .nav_link:hover {

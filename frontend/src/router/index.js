@@ -3,8 +3,7 @@ import WelcomeVue from '../views/Welcome.vue';
 import FullStackTestVue from '../views/FullStackTest.vue';
 import NotFoundVue from '../views/NotFound.vue';
 import AuthTestVue from '../views/AuthTest.vue';
-import LoginVue from '../views/Login.vue';
-import CreateAccountVue from '../views/CreateAccount.vue';
+import LoginCreate from '../views/LoginCreate.vue';
 import auth from '../auth';
 
 const router = createRouter({
@@ -23,12 +22,21 @@ const router = createRouter({
     {
       path: "/login",
       name: "Login",
-      component: LoginVue,
+      component: LoginCreate,
+      params: {
+        action: "login"
+      },
+      props: {
+        userAction: "login"
+      }
     },
     {
       path: "/CreateAccount",
       name: "CreateAccount",
-      component: CreateAccountVue,
+      component: LoginCreate,
+      props: {
+        userAction: "create"
+      }
     },
     {
       path: "/AuthTest",
@@ -55,8 +63,10 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    console.log(to)
     return {
-      path: '/login'
+      path: '/login',
+      query: { redirect: to.fullPath }
     }
   }
 })
