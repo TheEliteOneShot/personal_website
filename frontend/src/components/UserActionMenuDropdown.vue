@@ -1,13 +1,18 @@
-<script>
-import { defineComponent, ref } from 'vue'
+<script lang="ts">
+import logging from '@/services/logging/logger';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  name: "UserActionMenuDropdown",
+  name: 'UserActionMenuDropdown',
   setup() {
+    const test = () => {
+      logging.debug('clicked')
+    };
+
     const showDropdown = ref(false);
-    return { showDropdown };
+    return { showDropdown, test };
   }
-})
+});
 </script>
 
 <template>
@@ -17,20 +22,24 @@ export default defineComponent({
       <mdb-dropdown-item to="/login">Login</mdb-dropdown-item>
       <mdb-dropdown-item to="/createaccount">Create Account</mdb-dropdown-item>
       <mdb-dropdown-item divider />
-      <mdb-dropdown-item to="/logout">Logout</mdb-dropdown-item>
+      <mdb-dropdown-item @click="test" href="#">Logout</mdb-dropdown-item>
     </mdb-dropdown-menu>
   </mdb-dropdown>
 </template>
 
-
 <style>
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

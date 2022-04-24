@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 
-const auth =  reactive({
+const auth = reactive({
   isLoggedIn: false
-});
+})
 
-export default auth;
+export default auth

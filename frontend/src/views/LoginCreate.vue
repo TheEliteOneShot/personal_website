@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from "vue-toast-notification";
+import { useStore } from "vuex";
 
 export default defineComponent({
     name: "CreateAccount",
     props: ['userAction'],
     setup() {
+        const store = useStore();
         const loginModalShowing = ref(false);
         const usernameOrEmail = ref();
         const loginPassword = ref();
@@ -19,17 +20,17 @@ export default defineComponent({
         };
 
         const performLogin = () => {
-            toast.success("Successful login")
+
         }
+
         const createAccountModalShowing = ref(false);
         const router = useRouter();
-        const toast = useToast();
 
-        const username = ref();
-        const email = ref();
-        const firstname = ref();
-        const lastname = ref();
-        const createPassword = ref();
+        const username = ref("testname");
+        const email = ref("test@gmail.com");
+        const firstname = ref("zachary");
+        const lastname = ref("lastna");
+        const createAccountPassword = ref("password");
 
         const checkFormCreateAccountForm = e => {
             e.target.classList.add("was-validated");
@@ -38,7 +39,7 @@ export default defineComponent({
             if (!(email.value?.length >= 1 && email.value?.length <= 25 && emailPattern.test(email.value))) return;
             if (!(firstname.value?.length >= 1 && firstname.value?.length <= 25)) return;
             if (!(lastname.value?.length >= 1 && lastname.value?.length <= 25)) return;
-            if (!(createPassword.value?.length >= 1 && createPassword.value?.length <= 25)) return;
+            if (!(createAccountPassword.value?.length >= 1 && createAccountPassword.value?.length <= 25)) return;
             performCreateAccount();
         };
 
@@ -56,11 +57,32 @@ export default defineComponent({
             router.back()
         };
 
-        const performCreateAccount = () => {
-            toast.success("Successfully created an account")
-        }
+        const createAccountUserNameTooltip = ref("Please enter a username");
+        const usernameElementId = "createAccount_username"
+
+        const accountBeingCreated = ref(false);
+        const performCreateAccount = async () => {
+            accountBeingCreated.value = true;
+            let result = await store.dispatch('user/asyncCreateAccount', {
+                username: username.value,
+                email: email.value,
+                firstname: firstname.value,
+                lastname: lastname.value,
+                password: createAccountPassword.value
+            });
+
+            if (result.status == "ok") {
+                // perform login, redirect
+            } else {
+                createAccountUserNameTooltip.value = "Please enter a unique username, that one is already taken.";
+                document.getElementById(usernameElementId)?.classList.add('is-invalid');
+            }
+            accountBeingCreated.value = false;
+        };
 
         return {
+            accountBeingCreated,
+            createAccountUserNameTooltip,
             createAccountModalShowing,
             loginModalShowing,
             cancelScreen,
@@ -71,7 +93,7 @@ export default defineComponent({
             username,
             loginPassword,
             usernameOrEmail,
-            createPassword,
+            createAccountPassword,
             checkLoginForm,
             showLoginModal,
             showCreateAccountModal,
@@ -94,8 +116,8 @@ export default defineComponent({
         <mdb-modal-header class="hideButton">
             <mdb-modal-title id="createAccountModalLabel">
                 <mdb-navbar expand="lg" light bg="white" container>
-                    <mdb-navbar-toggler target="#navbarExample01"></mdb-navbar-toggler>
-                    <mdb-navbar-nav collapse="navbarExample01" class="justify-content-between w-100">
+                    <mdb-navbar-toggler target="#navbar"></mdb-navbar-toggler>
+                    <mdb-navbar-nav collapse="navbar" class="justify-content-between w-100">
                         <mdb-navbar-item @click="showLoginModal">
                             Login
                         </mdb-navbar-item>
@@ -107,9 +129,9 @@ export default defineComponent({
             </mdb-modal-title>
         </mdb-modal-header>
         <mdb-modal-body>
-            <mdb-input ref="usernameInputElement" validationEvent="input" label="Username" v-model="username"
-                invalidFeedback="Please enter a Username" required title="Must contain between 1 and 25 characters"
-                minLength="1" maxLength="25" tooltipFeedback />
+            <mdb-input validationEvent="input" label="Username" v-model="username"
+                :invalidFeedback="createAccountUserNameTooltip" required title="Must contain between 1 and 25 characters"
+                minLength="1" maxLength="25" tooltipFeedback id="createAccount_username"/>
             <div class="create-account-inputs-seperator" />
             <mdb-input validationEvent="input" label="Email - example@email.com" v-model="email"
                 invalidFeedback="Please enter a valid Email Address" required
@@ -124,22 +146,28 @@ export default defineComponent({
                 invalidFeedback="Please enter your Last Name" required title="Must contain between 1 and 25 characters"
                 minLength="1" maxLength="25" tooltipFeedback />
             <div class="create-account-inputs-seperator" />
-            <mdb-input validationEvent="input" label="Password" v-model="createPassword"
+            <mdb-input validationEvent="input" label="Password" v-model="createAccountPassword"
                 invalidFeedback="Please enter a password" required title="Must contain between 1 and 15 characters"
                 minLength="1" maxLength="25" tooltipFeedback />
         </mdb-modal-body>
         <mdb-modal-footer>
+            <div v-if="!accountBeingCreated">
             <mdb-btn color="danger" @click="cancelScreen">Cancel</mdb-btn>
             <mdb-btn color="success" type="submit">Create Account</mdb-btn>
+            </div>
+            <div v-else="accountBeingCreated">Creating account...<mdb-spinner style="width: 1rem; height: 1rem" /></div>
+
+            
         </mdb-modal-footer>
     </mdb-modal>
-    <mdb-modal centered id="loginModal" tabindex="-1" labelledby="loginModalLabel" novalidate v-model="loginModalShowing"
-        staticBackdrop tag="form" class="modal-width g-3 needs-validation" @submit.prevent="checkLoginForm">
+    <mdb-modal centered id="loginModal" tabindex="-1" labelledby="loginModalLabel" novalidate
+        v-model="loginModalShowing" staticBackdrop tag="form" class="modal-width g-3 needs-validation"
+        @submit.prevent="checkLoginForm">
         <mdb-modal-header class="hideButton">
             <mdb-modal-title id="loginModalLabel">
                 <mdb-navbar expand="lg" light bg="white" container>
-                    <mdb-navbar-toggler target="#navbarExample01"></mdb-navbar-toggler>
-                    <mdb-navbar-nav collapse="navbarExample01" class="justify-content-between w-100">
+                    <mdb-navbar-toggler target="#navbar2"></mdb-navbar-toggler>
+                    <mdb-navbar-nav collapse="navbar2" class="justify-content-between w-100">
                         <mdb-navbar-item class="activeActionSelection" @click="showLoginModal">
                             Login
                         </mdb-navbar-item>
@@ -166,7 +194,8 @@ export default defineComponent({
     </mdb-modal>
 </template>
 
-<style>
+<style scoped>
+
 .is-valid {
     margin-bottom: 0px !important;
 }
@@ -187,9 +216,6 @@ export default defineComponent({
     width: 100% !important;
 }
 
-.modal-header .btn-close {
-    visibility: hidden;
-}
 
 .modal-header {
     padding: 0px !important;

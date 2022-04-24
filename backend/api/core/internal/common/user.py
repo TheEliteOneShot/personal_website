@@ -1,9 +1,9 @@
 from fastapi import HTTPException, status
-from core.models.common import UserModel
+from core.models.user import UserModel
 from core.config import get_settings
 import core.internal.auth as auth
 from typing import Optional
-from core.schemas.common.user import CreateUserSchema
+from core.schemas.user import CreateUserSchema
 
 async def get_user_by_username(db_session, username: str):
     return await UserModel.find_by_username(db_session, username)

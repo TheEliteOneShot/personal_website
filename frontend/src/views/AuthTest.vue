@@ -1,13 +1,13 @@
 <script>
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue';
 
 export default defineComponent({
-    name: "Not Found",
+    name: 'Not Found',
     setup() {
         return {
         };
-    },
-})
+    }
+});
 </script>
 <template>
     <main>
@@ -18,13 +18,10 @@ export default defineComponent({
                     This route does not exist.
                 </mdb-card-text>
             </mdb-card-body>
-        </mdb-card> 
+        </mdb-card>
     </main>
 </template>
 
 <style>
 </style>
-
-
-
 

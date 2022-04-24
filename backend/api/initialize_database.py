@@ -1,6 +1,6 @@
 from core.internal.database import engine
 from core.models.base import Base
-from core.models.common import UserModel
+from core.models.user import UserModel
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 

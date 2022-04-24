@@ -18,7 +18,7 @@ export default defineComponent({
                     This route does not exist.
                 </mdb-card-text>
             </mdb-card-body>
-        </mdb-card> 
+        </mdb-card>
     </main>
 </template>
 
