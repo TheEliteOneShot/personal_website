@@ -1,19 +1,18 @@
 import { ICreateAccount } from '@/interfaces/user/ICreateAccount';
-import { getLocalStorageSync } from '@/services/util/storage';
 import userApi from '@/services/api/user';
 import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
+import { ILogin } from '@/interfaces/user/ILogin';
+import { useGlobalToast } from "@/toast"
+
+const toast = useGlobalToast();
 
 export default {
 	namespaced: true,
-	state: () => ({
-		currentlyLoggedIn: getLocalStorageSync('currentlyLoggedIn', false),
-		authToken: getLocalStorageSync('token', null),
-		refreshToken: getLocalStorageSync('refreshToken', null),
-	}),
+	state: () => ({}),
 	mutations: {
 		accountCreated: () => {
-			logging.debug('Account was created here');
+			logging.debug(`Mutation user/accountCreated called`);
 		},
 	},
 	actions: {
@@ -21,28 +20,54 @@ export default {
 			{ commit },
 			createAccountModel: ICreateAccount
 		): Promise<IApiResponse> {
+			logging.debug(`Action auth/asyncCreateAccount called`);
 			return await userApi
 				.createAccount(createAccountModel)
 				.then(async (response) => {
-					if(response.status == "ok") {
-						logging.debug(
-							`Recieved a good response inside user module: ${JSON.stringify(response)}`
-						);
-						commit('accountCreated')
-					} else {
-						logging.debug(
-							`Recieved a bad response inside user module: ${JSON.stringify(response)}`
-						);
+					if (response.ok) {
+						commit('accountCreated');
+						commit('auth/loggedIn', response, { root: true });
+						toast.success('Successfully Account Creation')
 					}
 					return response;
 				})
-				.catch(async (error) => await handleError(error));
+				.catch(
+					async (error) =>
+						await handleActionError(error, 'asyncCreateAccount')
+				);
+		},
+		async login(
+			{ commit },
+			loginAccountModel: ILogin
+		): Promise<IApiResponse> {
+			return await userApi
+				.login(loginAccountModel)
+				.then(async (response) => {
+					if (response.ok) {
+						commit('auth/loggedIn', response, { root: true });
+					}
+					return response;
+				})
+				.catch(
+					async (error) => await handleActionError(error, 'login')
+				);
+		},
+		async getUserItemsFromServer() {
+			return await userApi
+				.getUserItemsFromServer()
+				.catch(
+					async (error) =>
+						await handleActionError(error, 'getUserItemsFromServer')
+				);
 		},
 	},
 	getters: {},
 };
 
-async function handleError(error: any): Promise<IApiResponse> {
-	logging.debug(`Error inside store user module: ${error}`);
-	throw new Error(`${error.statusText}`, { cause: error.data.detail });
+async function handleActionError(
+	error: any,
+	actionName: string
+): Promise<IApiResponse> {
+	logging.debug(`'${actionName}' error inside store user module: ${error}`);
+	throw new Error(`${error?.statusText}`, { cause: error?.data?.detail });
 }

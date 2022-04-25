@@ -3,6 +3,7 @@ import config from '@/config';
 import { ICreateAccount } from '@/interfaces/user/ICreateAccount';
 import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
+import { ILogin } from '@/interfaces/user/ILogin';
 
 class userApi {
 	createAccount = async (createAccountModel: ICreateAccount) => {
@@ -16,11 +17,37 @@ class userApi {
 			});
 	};
 
+	login = async (loginModel: ILogin) => {
+		return await api
+			.post(config.routes.userApi.logIn, loginModel)
+			.then(async (response) => {
+                return await this.handleResponse(response);
+			})
+			.catch(async (error: Error) => {
+				return await this.handleError(error);
+			});
+	};
+
+	getUserItemsFromServer = async () => {
+		return await api
+			.get(config.routes.userApi.getUserItemsFromServer)
+			.then(async (response) => {
+                return await this.handleResponse(response);
+			})
+			.catch(async (error: Error) => {
+				return await this.handleError(error);
+			});
+	};
+
 	handleResponse = async (response: any): Promise<IApiResponse> => {
-		return {
-			status: "ok",
+		const resp = {
+			ok: true,
 			payload: response
-		}
+		} as IApiResponse
+		logging.debug(
+			`Returning response from the userApi. status: ${resp.ok} payload: ${JSON.stringify(resp?.payload)}}`
+		);
+		return resp
 	};
 
 
@@ -36,7 +63,7 @@ class userApi {
 	parseErrorCause = async (cause: string): Promise<IApiResponse> => {
 		let reason = 'UNKNOWN_ERROR';
         if (cause.includes("USERNAME_TAKEN")) reason = "USERNAME_TAKEN";
-        return {status: "error", message: reason};
+        return {ok: false, message: reason};
 	}
 }
 

@@ -4,7 +4,7 @@ import FullStackTestVue from "@/views/FullStackTest.vue";
 import NotFoundVue from "@/views/NotFound.vue";
 import AuthTestVue from "@/views/AuthTest.vue";
 import LoginCreate from "@/views/LoginCreate.vue";
-import auth from "@/auth";
+import store from '@/stores/store';
 
 const router = createRouter({
   history: createWebHistory("/"),
@@ -63,7 +63,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+  if (to.meta.requiresAuth && !store.getters['auth/isLoggedIn']) {
     return {
       path: "/login",
       query: { redirect: to.fullPath },

@@ -1,11 +1,13 @@
 <script>
 import {onMounted, defineComponent, getCurrentInstance, ref} from 'vue';
 import {loadScript} from 'vue-plugin-load-script';
+// @ts-ignore
 import agGridUrl from '@/assets/scripts/ag_grid_enterprise.min.js?url';
 
 export default defineComponent({
     name: 'FullStackTest',
     setup() {
+        // @ts-ignore
         const app = getCurrentInstance().appContext.config.globalProperties;
         const API_BASE_URL = app.getApiBaseUrl();
         const API_BULK_BASE_URL = API_BASE_URL + 'bulk';
@@ -72,6 +74,7 @@ export default defineComponent({
                 name: name.value,
                 description: description.value
             };
+            // @ts-ignore
             gridOptionsAddData.api.applyTransaction({
                 add: [newRow]
             });

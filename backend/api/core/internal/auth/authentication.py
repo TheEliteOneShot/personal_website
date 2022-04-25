@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.api.deps import get_db
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
-import core.internal.common as common
+from core.internal.user import get_user_by_username
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,7 +23,7 @@ async def get_password_hash(password):
 
 
 async def authenticate_user(db_session, username: str, password: str):
-    user: UserModel = await common.get_user_by_username(db_session, username)
+    user: UserModel = await get_user_by_username(db_session, username)
     if not user:
         return False
     if not await verify_password(password, user.password):
@@ -70,7 +70,7 @@ async def refresh_access_token(db_session, refresh_token):
         to_encode.update({"sub": payload["sub"]})
     except:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=default_exception_detail,
             headers={"WWW-Authenticate": "Bearer"},
         )
@@ -92,13 +92,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db_session: Asyn
             raise credentials_exception
     except:
         raise credentials_exception
-    user = await common.get_user_by_username(db_session, username)
+    user = await get_user_by_username(db_session, username)
     if user is None:
         raise credentials_exception
     return user
 
 
 async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
+    print(current_user.disabled)
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="INACTIVE_USER")
     return current_user

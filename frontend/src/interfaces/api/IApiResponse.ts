@@ -1,7 +1,5 @@
-export type StatusTypes = 'ok'|'error';
-
 export interface IApiResponse {
-    status: StatusTypes,
+    ok: boolean,
     message?: string,
     payload?: any,
   }

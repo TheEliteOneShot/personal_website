@@ -48,6 +48,24 @@ class UserSchema(BaseModel):
             }
         }
 
+class LoginUserSchema(BaseModel):
+    credential: str = Field(
+        title="",
+        description="",
+    )
+    password: Optional[str] = Field(
+        title="",
+        description="",
+    )
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "credential": "User1234 or test@gmail.com",
+                "password": "passwordOverTLS",
+            }
+        }
+
 class CreateUserSchema(BaseModel):
     username: str = Field(
         title="",

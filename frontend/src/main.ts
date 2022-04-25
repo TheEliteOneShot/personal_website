@@ -1,5 +1,7 @@
 import LoadScript from "vue-plugin-load-script";
-import VueToast from "vue-toast-notification";
+import Toast, { PluginOptions, POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+// @ts-ignore
 import * as mdb from "mdb-vue-ui-kit";
 import { createApp } from "vue";
 
@@ -8,15 +10,24 @@ import Router from "@/router";
 import Config from "@/config";
 import store from "@/stores/store";
 import baseApi from "@/axios";
+import { provideAppToast } from './toast';
 
 const app = createApp(App);
 
 // Add configuration
 Object.assign(app.config.globalProperties, Config);
 
+const toastOptions: PluginOptions = {
+    position: POSITION.BOTTOM_RIGHT
+    // Set default toast options here 
+    // https://github.com/Maronato/vue-toastification
+};
+
 // Add Global Plugins
 app.use(Router);
-app.use(VueToast);
+// Enable global toasts
+app.use(provideAppToast, toastOptions)
+app.use(Toast, toastOptions);
 app.use(LoadScript);
 app.use(store);
 

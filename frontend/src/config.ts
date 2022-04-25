@@ -30,9 +30,15 @@ const env = {
 const routes = {
     baseUrl: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}`,
     docsUrl: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}/docs`,
+    authApi: {
+        baseUrl: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/auth`,
+        refreshAccessToken: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/auth/token/refresh`       
+    },
     userApi: {
         baseUrl: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/user`,
         createUser: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/user/create`,
+        getUserItemsFromServer: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/user/me/items`,
+        logIn: `${env.API_BASE_PROTOCOL}://${env.API_BASE_HOST}:${env.API_BASE_PORT}${env.API_BASE_PREFIX}/user/login`,
     },
 }
 

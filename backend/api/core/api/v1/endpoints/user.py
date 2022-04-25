@@ -2,18 +2,27 @@ from fastapi import Depends, HTTPException, status, APIRouter
 from core.config import get_settings
 from core.api.deps import get_db
 from core.api.deps import get_db, get_current_active_user
-from core.internal.common import create_user, delete_user_by_username
-from core.schemas.user import CreateUserSchema, UserResponse, UserSchema
+from core.internal.auth import create_access_token
+from core.internal.user import create_user, delete_user_by_username, login_user
+from core.schemas.auth import TokenSchema
+from core.schemas.user import CreateUserSchema, UserResponse, UserSchema, LoginUserSchema
 from core.api.deps import get_current_user
 
 API_PREFIX = get_settings().USER_API_PREFIX
 
 router = APIRouter(prefix=API_PREFIX)
 
-@router.post("/create", status_code=status.HTTP_201_CREATED)
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=TokenSchema)
+async def login(payload: LoginUserSchema, db_session = Depends(get_db)):
+    await login_user(db_session, payload)
+    tokens = await create_access_token(db_session, data={"sub": payload.credential})
+    return {"access_token": tokens["access_token"], "refresh_token": tokens["refresh_token"], "token_type": "bearer"}
+
+@router.post("/create", status_code=status.HTTP_201_CREATED, response_model=TokenSchema)
 async def create(payload: CreateUserSchema, db_session = Depends(get_db)):
     await create_user(db_session, payload)
-    return "The user has been successfully created"
+    tokens = await create_access_token(db_session, data={"sub": payload.username})
+    return {"access_token": tokens["access_token"], "refresh_token": tokens["refresh_token"], "token_type": "bearer"}
 
 @router.delete("/username/{username}", status_code=status.HTTP_200_OK)
 async def delete(username: str, db_session = Depends(get_db), user: UserSchema = Depends(get_current_user)):
@@ -35,4 +44,4 @@ async def read_users_me(current_user: UserSchema = Depends(get_current_active_us
 
 @router.get("/me/items/")
 async def read_own_items(current_user: UserSchema = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    return [{"owner": current_user.username, "description": "This came from the database behind an authenticated route."}]

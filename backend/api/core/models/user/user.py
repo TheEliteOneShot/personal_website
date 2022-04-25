@@ -15,7 +15,7 @@ class UserModel(Base):
     lastname = Column(String)
     email = Column(String)
     role = Column(String, nullable=False, default="user")
-    disabled = Column(Boolean, nullable=False, default=get_settings().NEW_USER_ENABLED_BY_DEFAULT)
+    disabled = Column(Boolean, nullable=False, default=get_settings().NEW_USER_DISABLED_BY_DEFAULT)
 
     @classmethod
     async def delete_by_username(cls, db_session: AsyncSession, username):
@@ -61,6 +61,18 @@ class UserModel(Base):
         :return UserModel:
         """
         stmt = select(cls).where(cls.username == username)
+        result = await db_session.execute(stmt)
+        return result.scalars().first()
+    
+    @classmethod
+    async def find_by_email(cls, db_session: AsyncSession, email: str):
+        """
+
+        :param db_session:
+        :param email:
+        :return UserModel:
+        """
+        stmt = select(cls).where(cls.email == email)
         result = await db_session.execute(stmt)
         return result.scalars().first()
         

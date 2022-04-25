@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     AUTHENTICATION_API_PREFIX = API_ROOT_PATH + "/auth"
     HEALTHCHECK_API_PREFIX = API_ROOT_PATH + "/healthcheck"
 
-    NEW_USER_ENABLED_BY_DEFAULT=True
+    NEW_USER_DISABLED_BY_DEFAULT=False
 
     # CORS
     CORS_ORIGINS = [
