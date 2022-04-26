@@ -27,7 +27,6 @@ const toastOptions: PluginOptions = {
 app.use(Router);
 // Enable global toasts
 app.use(provideAppToast, toastOptions)
-app.use(Toast, toastOptions);
 app.use(LoadScript);
 app.use(store);
 

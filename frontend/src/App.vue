@@ -69,7 +69,7 @@ export default defineComponent({
     <body id="body-pd">
       <div class="content-container height-100 bg-light">
         <router-view v-slot="{ Component }">
-          <keep-alive include="FullStackTest">
+          <keep-alive include="AuthTest">
             <component :is="Component" />
           </keep-alive>
         </router-view>

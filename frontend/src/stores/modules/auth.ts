@@ -5,7 +5,8 @@ import {
 } from '@/services/util/storage';
 import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
-import { useGlobalToast } from "@/toast"
+import { useGlobalToast } from '@/toast';
+import store from '../store';
 
 const toast = useGlobalToast();
 
@@ -15,6 +16,8 @@ export default {
 		isLoggedIn: Boolean(getLocalStorageSync('sessionActive', false)),
 		accessToken: getLocalStorageSync('accessToken', null),
 		refreshToken: getLocalStorageSync('refreshToken', null),
+		tokenRefreshingCallbacks: null,
+		tokenIsRefreshing: false,
 	}),
 	mutations: {
 		loggedIn: (state: any, { payload }) => {
@@ -25,19 +28,19 @@ export default {
 					state.refreshToken = payload.data.refresh_token;
 					setLocalStorageSync('accessToken', state.accessToken);
 					setLocalStorageSync('refreshToken', state.refreshToken);
-					state.isLoggedIn = true;
 					setLocalStorageSync('sessionActive', 'true');
-					toast.success('Successfull Login')
+					state.isLoggedIn = true;
+					toast.success('Successfull Login');
 				} else {
 					throw new Error(
 						'The loggedIn mutation in the Auth store needs an access token and a refresh token but some were empty.'
 					);
 				}
 			} catch (error) {
-				handleMutationError(error, "loggedIn");
+				handleMutationError(error, 'loggedIn');
 			}
 		},
-		loggedOut: (state: any) => {
+		loggedOut: (state: any, showMessage: boolean = true) => {
 			try {
 				logging.debug(`Mutation user/loggedOut called`);
 				state.isLoggedIn = false;
@@ -46,32 +49,52 @@ export default {
 				removeItemLocalStorageSync('sessionActive');
 				removeItemLocalStorageSync('accessToken');
 				removeItemLocalStorageSync('refreshToken');
-				toast.success('Successful Logout')
+				if (showMessage) {
+					toast.success('Successful Logout');
+				}
 			} catch (error) {
-				handleMutationError(error, "loggedOut");
+				handleMutationError(error, 'loggedOut');
 			}
 		},
-		refreshedToken: (state: any, tokens ) => {
+		tokenRefreshStarted: (state: any) => {
+			state.tokenIsRefreshing = true;
+		},
+		tokenSetRefreshingCallbackChain: (state: any, callbacks: any) => {
+			state.tokenRefreshingCallbacks = callbacks;
+		},
+		tokenRefreshComplete: (state: any) => {
+			state.tokenIsRefreshing = false;
+		},
+		isBeingLoggedIn: (state: any) => {
+			state.isBeingLoggedIn = true;
+		},
+		setTokens: (state: any, tokens: any) => {
 			try {
-				logging.debug(`Mutation user/refreshedToken called`);
+				logging.debug(`Mutation user/setTokens called`);
 				if (tokens.access_token && tokens.refresh_token) {
 					state.accessToken = tokens.access_token;
 					state.refreshToken = tokens.refresh_token;
 					setLocalStorageSync('accessToken', state.accessToken);
 					setLocalStorageSync('refreshToken', state.refreshToken);
-					logging.debug('Successfully refreshed the tokens.')
+					logging.debug('Successfully refreshed the tokens.');
 				} else {
 					throw new Error(
-						'The refreshedToken mutation in the Auth store needs an access token and a refresh token but some were empty.'
+						'The setTokens mutation in the Auth store needs an access token and a refresh token but some were empty.'
 					);
 				}
 			} catch (error) {
-				handleMutationError(error, "refreshedToken");
+				handleMutationError(error, 'setTokens');
 			}
-		}
+		},
 	},
 	actions: {},
 	getters: {
+		getTokenRefreshingCallbacks(state: any) {
+			return state.tokenRefreshingCallbacks;
+		},
+		isTokenBeingRefreshed(state: any) {
+			return state.isTokenBeingRefreshed;
+		},
 		isLoggedIn(state: any) {
 			return state.isLoggedIn;
 		},
@@ -80,6 +103,9 @@ export default {
 		},
 		refreshToken(state: any) {
 			return state.refreshToken;
+		},
+		isBeingLoggedIn(state: any) {
+			return state.isBeingLoggedIn;
 		},
 	},
 };
@@ -91,7 +117,12 @@ function handleMutationError(error: any, mutationName: string) {
 	throw error;
 }
 
-async function handleActionError(error: any, actionName: string): Promise<IApiResponse> {
-	logging.debug(`'${actionName}' action error inside store auth module: ${error}`);
+async function handleActionError(
+	error: any,
+	actionName: string
+): Promise<IApiResponse> {
+	logging.debug(
+		`'${actionName}' action error inside store auth module: ${error}`
+	);
 	throw new Error(`${error?.statusText}`, { cause: error?.data?.detail });
 }

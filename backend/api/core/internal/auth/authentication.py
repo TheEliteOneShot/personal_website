@@ -69,8 +69,9 @@ async def refresh_access_token(db_session, refresh_token):
         to_encode = {}
         to_encode.update({"sub": payload["sub"]})
     except:
+        # Precondition: Token needs to NOT be expired
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_412_PRECONDITION_FAILED,
             detail=default_exception_detail,
             headers={"WWW-Authenticate": "Bearer"},
         )

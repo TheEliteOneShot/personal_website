@@ -3,17 +3,30 @@ import userApi from '@/services/api/user';
 import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
 import { ILogin } from '@/interfaces/user/ILogin';
-import { useGlobalToast } from "@/toast"
+import { useGlobalToast } from '@/toast';
+import store from '../store';
 
 const toast = useGlobalToast();
 
 export default {
 	namespaced: true,
-	state: () => ({}),
+	state: () => ({
+		accountBeingCreated: false,
+		isBeingLoggedIn: false,
+	}),
 	mutations: {
-		accountCreated: () => {
-			logging.debug(`Mutation user/accountCreated called`);
+		accountCreationHasFinished: (state: any ) => {
+			state.accountBeingCreated = false;
 		},
+		accountBeingCreated: (state: any) => {
+			state.accountBeingCreated = true;
+		},
+		isBeingLoggedIn: (state: any) => {
+			state.isBeingLoggedIn = true;
+		},
+		loggedIn: (state: any) => {
+			state.isBeingLoggedIn = false;
+		}
 	},
 	actions: {
 		async asyncCreateAccount(
@@ -21,13 +34,14 @@ export default {
 			createAccountModel: ICreateAccount
 		): Promise<IApiResponse> {
 			logging.debug(`Action auth/asyncCreateAccount called`);
+			commit('accountBeingCreated');
 			return await userApi
 				.createAccount(createAccountModel)
 				.then(async (response) => {
 					if (response.ok) {
-						commit('accountCreated');
+						commit('accountCreationHasFinished');
 						commit('auth/loggedIn', response, { root: true });
-						toast.success('Successfully Account Creation')
+						toast.success('Successfully Account Creation');
 					}
 					return response;
 				})
@@ -40,10 +54,12 @@ export default {
 			{ commit },
 			loginAccountModel: ILogin
 		): Promise<IApiResponse> {
+			commit('isBeingLoggedIn');
 			return await userApi
 				.login(loginAccountModel)
 				.then(async (response) => {
 					if (response.ok) {
+						commit('loggedIn');
 						commit('auth/loggedIn', response, { root: true });
 					}
 					return response;
@@ -61,7 +77,14 @@ export default {
 				);
 		},
 	},
-	getters: {},
+	getters: {
+		accountBeingCreated(state: any) {
+			return state.accountBeingCreated;
+		},
+		isBeingLoggedIn(state: any) {
+			return state.isBeingLoggedIn
+		}
+	},
 };
 
 async function handleActionError(

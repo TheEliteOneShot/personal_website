@@ -7,7 +7,7 @@ import logger from "@/services/logging/logger";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  name: "Not Found",
+  name: "AuthTest",
   setup() {
     const store = useStore();
     onMounted(async () => {

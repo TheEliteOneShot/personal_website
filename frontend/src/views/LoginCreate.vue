@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -7,7 +7,6 @@ export default defineComponent({
   name: "CreateAccount",
   props: ["userAction"],
   setup() {
-      
     const store = useStore();
     const loginModalShowing = ref(false);
     const loginCredential = ref("");
@@ -48,6 +47,10 @@ export default defineComponent({
         document.getElementById("login_password")?.classList.add("is-invalid");
       }
     };
+
+    const isBeingLoggedIn = computed(
+      () => store.getters["user/isBeingLoggedIn"]
+    );
 
     const createAccountModalShowing = ref(false);
     const router = useRouter();
@@ -95,9 +98,10 @@ export default defineComponent({
     };
 
     const invalidCreateAccountUserNameTooltip = ref("Please enter a username");
-    const accountBeingCreated = ref(false);
+    const accountBeingCreated = computed(
+      () => store.getters["user/accountBeingCreated"]
+    );
     const performCreateAccount = async () => {
-      accountBeingCreated.value = true;
       let result = await store.dispatch("user/asyncCreateAccount", {
         username: username.value,
         email: email.value,
@@ -116,11 +120,9 @@ export default defineComponent({
           .getElementById("createAccount_username")
           ?.classList.add("is-invalid");
       }
-      accountBeingCreated.value = false;
     };
 
     return {
-      accountBeingCreated,
       invalidCreateAccountUserNameTooltip,
       createAccountModalShowing,
       loginModalShowing,
@@ -138,6 +140,8 @@ export default defineComponent({
       showCreateAccountModal,
       invalidLoginCredentialTooltip,
       invalidLoginPasswordTooltip,
+      accountBeingCreated,
+      isBeingLoggedIn,
     };
   },
   mounted() {
@@ -161,7 +165,8 @@ export default defineComponent({
     staticBackdrop
     tag="form"
     class="modal-width g-3 needs-validation"
-    @submit.prevent="checkFormCreateAccountForm" v-on:keydown.enter.prevent='checkFormCreateAccountForm'
+    @submit.prevent="checkFormCreateAccountForm"
+    v-on:keydown.enter.prevent="checkFormCreateAccountForm"
   >
     <mdb-modal-header class="hideButton">
       <mdb-modal-title id="createAccountModalLabel">
@@ -265,7 +270,8 @@ export default defineComponent({
     staticBackdrop
     tag="form"
     class="modal-width g-3 needs-validation"
-    @submit.prevent="checkLoginForm" v-on:keydown.enter.prevent='checkLoginForm'
+    @submit.prevent="checkLoginForm"
+    v-on:keydown.enter.prevent="checkLoginForm"
   >
     <mdb-modal-header class="hideButton">
       <mdb-modal-title id="loginModalLabel">
@@ -316,8 +322,13 @@ export default defineComponent({
       />
     </mdb-modal-body>
     <mdb-modal-footer>
-      <mdb-btn color="danger" @click="cancelScreen"> Cancel </mdb-btn>
-      <mdb-btn color="success" type="submit"> Login </mdb-btn>
+      <div v-if="!isBeingLoggedIn">
+        <mdb-btn color="danger" @click="cancelScreen"> Cancel </mdb-btn>
+        <mdb-btn color="success" type="submit"> Login </mdb-btn>
+      </div>
+      <div v-else="isBeingLoggedIn">
+        Logging in...<mdb-spinner style="width: 1rem; height: 1rem" />
+      </div>
     </mdb-modal-footer>
   </mdb-modal>
 </template>
