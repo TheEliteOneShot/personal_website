@@ -28,7 +28,8 @@ class Base:
         except SQLAlchemyError as ex:
             message = repr(ex)
             print(message)
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=message)
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=message)
 
     async def delete(self, db_session: AsyncSession):
         """
@@ -43,7 +44,8 @@ class Base:
         except SQLAlchemyError as ex:
             message = repr(ex)
             print(message)
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=message)
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=message)
 
     async def update(self, db_session: AsyncSession, **kwargs):
         """
@@ -55,4 +57,3 @@ class Base:
         for k, v in kwargs.items():
             setattr(self, k, v)
         await self.save(db_session)
-

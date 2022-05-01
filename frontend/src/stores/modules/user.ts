@@ -4,7 +4,6 @@ import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
 import { ILogin } from '@/interfaces/user/ILogin';
 import { useGlobalToast } from '@/toast';
-import store from '../store';
 
 const toast = useGlobalToast();
 
@@ -13,35 +12,60 @@ export default {
 	state: () => ({
 		accountBeingCreated: false,
 		isBeingLoggedIn: false,
+		isBeingLoggedOut: false,
 	}),
 	mutations: {
-		accountCreationHasFinished: (state: any ) => {
+		accountCreationSuccessful: (state: any) => {
+			logging.debug(`Mutation user/accountCreationSuccessful called`);
 			state.accountBeingCreated = false;
 		},
 		accountBeingCreated: (state: any) => {
+			logging.debug(`Mutation user/accountBeingCreated called`);
 			state.accountBeingCreated = true;
 		},
+		accountCreationFailed: (state: any) => {
+			logging.debug(`Mutation user/accountCreationFailed called`);
+			state.accountBeingCreated = false;
+		},
 		isBeingLoggedIn: (state: any) => {
+			logging.debug(`Mutation user/isBeingLoggedIn called`);
 			state.isBeingLoggedIn = true;
 		},
-		loggedIn: (state: any) => {
+		isBeingLoggedOut: (state: any) => {
+			logging.debug(`Mutation user/isBeingLoggedOut called`);
+			state.isBeingLoggedOut = true;
+		},
+		loginSuccess: (state: any) => {
+			logging.debug(`Mutation user/loginSuccess called`);
 			state.isBeingLoggedIn = false;
-		}
+		},
+		loginFailed: (state: any) => {
+			logging.debug(`Mutation user/loginFailed called`);
+			state.isBeingLoggedIn = false;
+		},
+		logoutSuccess: (state: any) => {
+			logging.debug(`Mutation user/logoutSuccess called`);
+			state.isBeingLoggedOut = false;
+		},
+		logoutFailed: (state: any) => {
+			logging.debug(`Mutation user/logoutFailed called`);
+			state.isBeingLoggedOut = false;
+		},
 	},
 	actions: {
 		async asyncCreateAccount(
 			{ commit },
 			createAccountModel: ICreateAccount
 		): Promise<IApiResponse> {
-			logging.debug(`Action auth/asyncCreateAccount called`);
+			logging.debug(`Action user/asyncCreateAccount called`);
 			commit('accountBeingCreated');
 			return await userApi
 				.createAccount(createAccountModel)
 				.then(async (response) => {
 					if (response.ok) {
-						commit('accountCreationHasFinished');
+						commit('accountCreationSuccessful');
 						commit('auth/loggedIn', response, { root: true });
-						toast.success('Successfully Account Creation');
+						toast.success('Successfully Created Account');
 					}
 					return response;
 				})
@@ -54,12 +78,13 @@ export default {
 			{ commit },
 			loginAccountModel: ILogin
 		): Promise<IApiResponse> {
+			logging.debug(`Action user/login called`);
 			commit('isBeingLoggedIn');
 			return await userApi
 				.login(loginAccountModel)
 				.then(async (response) => {
 					if (response.ok) {
-						commit('loggedIn');
+						commit('loginSuccess');
 						commit('auth/loggedIn', response, { root: true });
 					}
 					return response;
@@ -68,7 +93,26 @@ export default {
 					async (error) => await handleActionError(error, 'login')
 				);
 		},
+		async logout(
+			{ commit }
+		): Promise<IApiResponse> {
+			logging.debug(`Action user/logout called`);
+			commit('isBeingLoggedOut');
+			return await userApi
+				.logout()
+				.then(async (response) => {
+					if (response.ok) {
+						commit('logoutSuccess');
+						commit('auth/loggedOut', true, { root: true });
+					}
+					return response;
+				})
+				.catch(
+					async (error) => await handleActionError(error, 'logout')
+				);
+		},
 		async getUserItemsFromServer() {
+			logging.debug(`Action user/getUserItemsFromServer called`);
 			return await userApi
 				.getUserItemsFromServer()
 				.catch(
@@ -82,8 +126,8 @@ export default {
 			return state.accountBeingCreated;
 		},
 		isBeingLoggedIn(state: any) {
-			return state.isBeingLoggedIn
-		}
+			return state.isBeingLoggedIn;
+		},
 	},
 };
 

@@ -1,10 +1,11 @@
 from typing import AsyncGenerator
+
+import core.config as config
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 # Use Async Engine for a real database
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-import core.config as config
 
 global_settings = config.get_settings()
 # Async connection to a local SQLITE database
@@ -16,9 +17,12 @@ engine = create_async_engine(
     echo=True,
 )
 
-async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+async_session = sessionmaker(
+    engine, expire_on_commit=False, class_=AsyncSession)
 
 # Async
+
+
 async def get_db() -> AsyncGenerator:
     async with async_session() as session:
         try:

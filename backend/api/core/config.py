@@ -2,6 +2,7 @@ from functools import lru_cache
 from pydantic import BaseSettings
 import os
 
+
 class Settings(BaseSettings):
     """
 
@@ -14,7 +15,8 @@ class Settings(BaseSettings):
     instance of Settings
 
     """
-    LOGGING_LEVEL="DEBUG"
+
+    LOGGING_LEVEL = "DEBUG"
 
     ACCESS_TOKEN_SECRET_KEY = "ACCESS_TOKEN_SECRET_KEY_HERE"
     REFRESH_TOKEN_SECRET_KEY = "REFRESH_TOKEN_SECRET_KEY_HERE"
@@ -36,16 +38,16 @@ class Settings(BaseSettings):
     AUTHENTICATION_API_PREFIX = API_ROOT_PATH + "/auth"
     HEALTHCHECK_API_PREFIX = API_ROOT_PATH + "/healthcheck"
 
-    NEW_USER_DISABLED_BY_DEFAULT=False
+    NEW_USER_DISABLED_BY_DEFAULT = False
 
     # CORS
     CORS_ORIGINS = [
-    "*",
+        "*",
     ]
 
-    CORS_ALLOW_CREDENTIALS=True
-    CORS_ALLOW_METHODS=["*"]
-    CORS_ALLOW_HEADERS=["*"]
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_METHODS = ["*"]
+    CORS_ALLOW_HEADERS = ["*"]
 
 
 @lru_cache

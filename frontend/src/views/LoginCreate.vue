@@ -12,18 +12,9 @@ export default defineComponent({
     const loginCredential = ref("");
     const loginPassword = ref("");
 
-    const checkLoginForm = async (e) => {
+    const checkLoginForm = async (e: any) => {
       e.target.classList.add("was-validated");
-      if (
-        !(
-          loginCredential?.value.length >= 1 &&
-          loginCredential.value?.length <= 25 &&
-          loginPassword.value?.length >= 1 &&
-          loginPassword.value?.length <= 25
-        )
-      )
-        return;
-      await performLogin();
+      if (e.target.checkValidity()) await performLogin();
     };
 
     const invalidLoginCredentialTooltip = ref(
@@ -38,6 +29,7 @@ export default defineComponent({
       if (result.ok) {
         router.push({ path: "/welcome", query: { justLoggedIn: "true" } });
       } else {
+        store.commit("user/loginFailed");
         // TODO: Make this look better
         invalidLoginCredentialTooltip.value = "Invalid account credentials";
         invalidLoginPasswordTooltip.value = "Invalid account credentials";
@@ -61,36 +53,21 @@ export default defineComponent({
     const lastname = ref();
     const createAccountPassword = ref();
 
-    const checkFormCreateAccountForm = (e) => {
+    const checkFormCreateAccountForm = (e: any) => {
       e.target.classList.add("was-validated");
-      const emailPattern = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-      if (
-        !(
-          username.value?.length >= 1 &&
-          username.value?.length <= 25 &&
-          createAccountPassword.value?.length >= 1 &&
-          createAccountPassword.value?.length <= 25 &&
-          lastname.value?.length >= 1 &&
-          lastname.value?.length <= 25 &&
-          email.value?.length >= 1 &&
-          email.value?.length <= 25 &&
-          emailPattern.test(email.value) &&
-          firstname.value?.length >= 1 &&
-          firstname.value?.length <= 25
-        )
-      )
-        return;
-      performCreateAccount();
+      if (e.target.checkValidity()) performCreateAccount();
     };
 
     const showLoginModal = () => {
       createAccountModalShowing.value = false;
       loginModalShowing.value = true;
+      activeTab.value = "login";
     };
 
     const showCreateAccountModal = () => {
       createAccountModalShowing.value = true;
       loginModalShowing.value = false;
+      activeTab.value = "create";
     };
 
     const cancelScreen = () => {
@@ -113,16 +90,20 @@ export default defineComponent({
       if (result.ok) {
         router.push({ path: "/welcome", query: { newAccount: "true" } });
       } else {
+        store.commit("user/accountCreationFailed");
         // TODO: Make this look better
         invalidCreateAccountUserNameTooltip.value =
-          "Please enter a unique username, that one is already taken.";
+          "That username has already been taken";
         document
           .getElementById("createAccount_username")
           ?.classList.add("is-invalid");
       }
     };
 
+    const activeTab = ref("login");
+
     return {
+      activeTab,
       invalidCreateAccountUserNameTooltip,
       createAccountModalShowing,
       loginModalShowing,
@@ -169,23 +150,18 @@ export default defineComponent({
     v-on:keydown.enter.prevent="checkFormCreateAccountForm"
   >
     <mdb-modal-header class="hideButton">
-      <mdb-modal-title id="createAccountModalLabel">
-        <mdb-navbar expand="lg" light bg="white" container>
-          <mdb-navbar-toggler target="#navbar"> </mdb-navbar-toggler>
-          <mdb-navbar-nav
-            collapse="navbar"
-            class="justify-content-between w-100"
-          >
-            <mdb-navbar-item @click="showLoginModal"> Login </mdb-navbar-item>
-            <mdb-navbar-item
-              class="activeActionSelection"
-              @click="showCreateAccountModal"
-            >
-              Create Account
-            </mdb-navbar-item>
-          </mdb-navbar-nav>
-        </mdb-navbar>
-      </mdb-modal-title>
+      <mdb-tabs v-model="activeTab">
+        <!-- Tabs navs -->
+        <mdb-tab-nav pills tabsClasses="btn btn-light">
+          <mdb-tab-item tabId="login" @click="showLoginModal">
+            Login
+          </mdb-tab-item>
+          <mdb-tab-item tabId="create" @click="showCreateAccountModal">
+            Create Account
+          </mdb-tab-item>
+        </mdb-tab-nav>
+        <!-- Tabs navs -->
+      </mdb-tabs>
     </mdb-modal-header>
     <mdb-modal-body>
       <mdb-input
@@ -248,6 +224,8 @@ export default defineComponent({
         minLength="1"
         maxLength="25"
         tooltipFeedback
+        type="password"
+        autocomplete="off"
       />
     </mdb-modal-body>
     <mdb-modal-footer>
@@ -255,7 +233,7 @@ export default defineComponent({
         <mdb-btn color="danger" @click="cancelScreen"> Cancel </mdb-btn>
         <mdb-btn color="success" type="submit"> Create Account </mdb-btn>
       </div>
-      <div v-else="accountBeingCreated">
+      <div class="noselect" v-else="accountBeingCreated">
         Creating account...<mdb-spinner style="width: 1rem; height: 1rem" />
       </div>
     </mdb-modal-footer>
@@ -275,23 +253,18 @@ export default defineComponent({
   >
     <mdb-modal-header class="hideButton">
       <mdb-modal-title id="loginModalLabel">
-        <mdb-navbar expand="lg" light bg="white" container>
-          <mdb-navbar-toggler target="#navbar2"> </mdb-navbar-toggler>
-          <mdb-navbar-nav
-            collapse="navbar2"
-            class="justify-content-between w-100"
-          >
-            <mdb-navbar-item
-              class="activeActionSelection"
-              @click="showLoginModal"
-            >
+        <mdb-tabs v-model="activeTab">
+          <!-- Tabs navs -->
+          <mdb-tab-nav pills tabsClasses="btn btn-light pillHover">
+            <mdb-tab-item tabId="login" @click="showLoginModal">
               Login
-            </mdb-navbar-item>
-            <mdb-navbar-item @click="showCreateAccountModal">
+            </mdb-tab-item>
+            <mdb-tab-item tabId="create" @click="showCreateAccountModal">
               Create Account
-            </mdb-navbar-item>
-          </mdb-navbar-nav>
-        </mdb-navbar>
+            </mdb-tab-item>
+          </mdb-tab-nav>
+          <!-- Tabs navs -->
+        </mdb-tabs>
       </mdb-modal-title>
     </mdb-modal-header>
     <mdb-modal-body>
@@ -319,6 +292,8 @@ export default defineComponent({
         maxLength="25"
         tooltipFeedback
         id="login_password"
+        type="password"
+        autocomplete="off"
       />
     </mdb-modal-body>
     <mdb-modal-footer>
@@ -326,7 +301,7 @@ export default defineComponent({
         <mdb-btn color="danger" @click="cancelScreen"> Cancel </mdb-btn>
         <mdb-btn color="success" type="submit"> Login </mdb-btn>
       </div>
-      <div v-else="isBeingLoggedIn">
+      <div class="noselect" v-else="isBeingLoggedIn">
         Logging in...<mdb-spinner style="width: 1rem; height: 1rem" />
       </div>
     </mdb-modal-footer>
@@ -334,6 +309,41 @@ export default defineComponent({
 </template>
 
 <style scoped>
+#tab-create.active:hover, #tab-login.active:hover {
+  background-color: #1266f1 !important;
+  color: white !important;
+}
+
+#tab-create:active, #tab-login:active {
+  color: green !important;
+}
+
+
+#tab-create.active, #tab-login.active {
+  color: white;
+  background-color: #1266f1;
+}
+
+#tab-create, #tab-login {
+  outline: 1px solid black;
+}
+
+#tab-create:hover, #tab-login:hover {
+  color: #1266f1;
+  background-color: white;
+  outline: 1px solid black;
+}
+
+.nav-pills {
+  flex-direction: row;
+  margin: 0;
+}
+.nav-item {
+  border: 0 !important;
+  height: 50px;
+  margin-bottom: 20px;
+  padding: 0;
+}
 .is-valid {
   margin-bottom: 0px !important;
 }
@@ -359,33 +369,10 @@ export default defineComponent({
   display: block;
 }
 
-.nav-item {
-  border: 1px solid black;
-  padding: 20px;
-  -webkit-touch-callout: none;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Safari */
-  -khtml-user-select: none;
-  /* Konqueror HTML */
-  -moz-user-select: none;
-  /* Old versions of Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+.modal-footer {
+  margin-top: 20px;
 }
 
-.nav-item:hover {
-  background-color: lightblue;
-  font-weight: bolder;
-}
-
-.activeActionSelection {
-  background-color: lightblue;
-  font-weight: bolder;
-}
 </style>
 
 

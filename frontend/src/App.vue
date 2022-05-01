@@ -16,14 +16,13 @@ export default defineComponent({
     const router = useRouter();
     const currentlyLoggedIn = computed(() => store.getters["auth/isLoggedIn"]);
 
-    const logOut = () => {
-      store.commit("auth/loggedOut");
-      router.push({ path: "/welcome", query: { loggedOut: "true" } });
+    const logOut = async () => {
+      await store.dispatch("user/logout");
     };
 
     return {
       currentlyLoggedIn,
-      logOut
+      logOut,
     };
   },
 });
@@ -67,7 +66,7 @@ export default defineComponent({
     </div>
 
     <body id="body-pd">
-      <div class="content-container height-100 bg-light">
+      <div class="content-container bg-light">
         <router-view v-slot="{ Component }">
           <keep-alive include="AuthTest">
             <component :is="Component" />
@@ -90,5 +89,23 @@ export default defineComponent({
 
 .modal-header .btn-close {
   visibility: hidden;
+}
+.form-control {
+  margin-bottom: 0px !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

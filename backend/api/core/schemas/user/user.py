@@ -1,5 +1,7 @@
 from typing import Optional
+
 from pydantic import BaseModel, EmailStr, Field
+
 
 class UserSchema(BaseModel):
     id: Optional[int] = Field(
@@ -34,6 +36,7 @@ class UserSchema(BaseModel):
         title="",
         description="",
     )
+
     class Config:
         orm_mode = True
         schema_extra = {
@@ -48,6 +51,7 @@ class UserSchema(BaseModel):
             }
         }
 
+
 class LoginUserSchema(BaseModel):
     credential: str = Field(
         title="",
@@ -57,6 +61,7 @@ class LoginUserSchema(BaseModel):
         title="",
         description="",
     )
+
     class Config:
         orm_mode = True
         schema_extra = {
@@ -65,6 +70,7 @@ class LoginUserSchema(BaseModel):
                 "password": "passwordOverTLS",
             }
         }
+
 
 class CreateUserSchema(BaseModel):
     username: str = Field(
@@ -87,6 +93,7 @@ class CreateUserSchema(BaseModel):
         title="",
         description="",
     )
+
     class Config:
         orm_mode = True
         schema_extra = {
@@ -98,6 +105,7 @@ class CreateUserSchema(BaseModel):
                 "email": "test@myemail.com",
             }
         }
+
 
 class UserResponse(BaseModel):
     id: Optional[int] = Field(
@@ -128,6 +136,7 @@ class UserResponse(BaseModel):
         title="",
         description="",
     )
+
     class Config:
         orm_mode = True
         schema_extra = {

@@ -7,24 +7,29 @@
     # Remove the Server header for security
     header -Server
     
-    @allowedOrigin {
-    header_regexp Origin https:\/\/www(\.{$ORIGIN_DOMAIN}\.com)(:[0-9]+)?$
-    }
+    # @allowedOrigin {
+    # header_regexp Origin https:\/\/www(\.{$ORIGIN_DOMAIN}\.com)(:[0-9]+)?$
+    # }
     
-	handle @allowedOrigin {
+	# handle @allowedOrigin {
+    #     reverse_proxy {
+    #         to backend:5000
+    #         header_down Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
+    #         header_down Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
+    #         header_down Access-Control-Allow-Origin {http.request.header.Origin}
+    #     }
+    # }
+
+    handle /healthcheck {
+        respond "OK" 200
+    }
+
+    handle * {
         reverse_proxy {
             to backend:5000
             header_down Access-Control-Allow-Credentials {$ORIGIN_ALLOW_CREDENTIALS}
             header_down Access-Control-Allow-Method {$ORIGIN_ALLOW_METHOD}
             header_down Access-Control-Allow-Origin {http.request.header.Origin}
         }
-    }
-
-    handle /healthcheck {
-        respond "OK" 200
-    }
-
-    handle {
-        abort
     }
 }

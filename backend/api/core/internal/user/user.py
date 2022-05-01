@@ -1,9 +1,11 @@
-from fastapi import HTTPException, status
-from core.models.user import UserModel
-from core.config import get_settings
-import core.internal.auth as auth
-from core.schemas.user import CreateUserSchema, LoginUserSchema
 import re
+
+import core.internal.auth as auth
+from core.internal.exceptions import BadRequestHTTPException
+from core.models.user import UserModel
+from core.models.auth import RefreshToken
+from core.schemas.user import CreateUserSchema, LoginUserSchema
+from fastapi import HTTPException, status
 
 
 async def get_user_by_username(db_session, username: str):
@@ -36,10 +38,13 @@ async def login_user(db_session, user: LoginUserSchema):
     if foundUser is not None:
         if await auth.verify_password(user.password, foundUser.password):
             return True
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
+    raise BadRequestHTTPException(
         detail="INVALID_CREDENTIALS"
     )
+
+async def logout_user(db_session, username: str):
+    await RefreshToken.delete_by_username(db_session, username)
+
 
 
 async def delete_user_by_username(db_session, username: str):

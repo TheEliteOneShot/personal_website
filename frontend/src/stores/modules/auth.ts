@@ -6,7 +6,7 @@ import {
 import logging from '@/services/logging/logger';
 import { IApiResponse } from '@/interfaces/api/IApiResponse';
 import { useGlobalToast } from '@/toast';
-import store from '../store';
+import router from '@/router';
 
 const toast = useGlobalToast();
 
@@ -16,13 +16,12 @@ export default {
 		isLoggedIn: Boolean(getLocalStorageSync('sessionActive', false)),
 		accessToken: getLocalStorageSync('accessToken', null),
 		refreshToken: getLocalStorageSync('refreshToken', null),
-		tokenRefreshingCallbacks: null,
 		tokenIsRefreshing: false,
 	}),
 	mutations: {
 		loggedIn: (state: any, { payload }) => {
 			try {
-				logging.debug(`Mutation user/loggedIn called`);
+				logging.debug(`Mutation auth/loggedIn called`);
 				if (payload.data.access_token && payload.data.refresh_token) {
 					state.accessToken = payload.data.access_token;
 					state.refreshToken = payload.data.refresh_token;
@@ -42,7 +41,7 @@ export default {
 		},
 		loggedOut: (state: any, showMessage: boolean = true) => {
 			try {
-				logging.debug(`Mutation user/loggedOut called`);
+				logging.debug(`Mutation auth/loggedOut called`);
 				state.isLoggedIn = false;
 				state.accessToken = null;
 				state.refreshToken = null;
@@ -52,25 +51,22 @@ export default {
 				if (showMessage) {
 					toast.success('Successful Logout');
 				}
+				router.push({ path: "/welcome", query: { loggedOut: "true" } });
 			} catch (error) {
 				handleMutationError(error, 'loggedOut');
 			}
 		},
 		tokenRefreshStarted: (state: any) => {
+			logging.debug(`Mutation auth/tokenRefreshStarted called`);
 			state.tokenIsRefreshing = true;
 		},
-		tokenSetRefreshingCallbackChain: (state: any, callbacks: any) => {
-			state.tokenRefreshingCallbacks = callbacks;
-		},
 		tokenRefreshComplete: (state: any) => {
+			logging.debug(`Mutation auth/tokenRefreshComplete called`);
 			state.tokenIsRefreshing = false;
-		},
-		isBeingLoggedIn: (state: any) => {
-			state.isBeingLoggedIn = true;
 		},
 		setTokens: (state: any, tokens: any) => {
 			try {
-				logging.debug(`Mutation user/setTokens called`);
+				logging.debug(`Mutation auth/setTokens called`);
 				if (tokens.access_token && tokens.refresh_token) {
 					state.accessToken = tokens.access_token;
 					state.refreshToken = tokens.refresh_token;
@@ -89,11 +85,8 @@ export default {
 	},
 	actions: {},
 	getters: {
-		getTokenRefreshingCallbacks(state: any) {
-			return state.tokenRefreshingCallbacks;
-		},
-		isTokenBeingRefreshed(state: any) {
-			return state.isTokenBeingRefreshed;
+		tokenIsRefreshing(state: any) {
+			return state.tokenIsRefreshing;
 		},
 		isLoggedIn(state: any) {
 			return state.isLoggedIn;
@@ -103,9 +96,6 @@ export default {
 		},
 		refreshToken(state: any) {
 			return state.refreshToken;
-		},
-		isBeingLoggedIn(state: any) {
-			return state.isBeingLoggedIn;
 		},
 	},
 };

@@ -28,6 +28,17 @@ class userApi {
 			});
 	};
 
+	logout = async () => {
+		return await api
+			.post(config.routes.userApi.logOut, null)
+			.then(async (response) => {
+                return await this.handleResponse(response);
+			})
+			.catch(async (error: Error) => {
+				return await this.handleError(error);
+			});
+	};
+
 	getUserItemsFromServer = async () => {
 		return await api
 			.get(config.routes.userApi.getUserItemsFromServer)

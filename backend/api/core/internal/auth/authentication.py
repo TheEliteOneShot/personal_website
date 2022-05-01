@@ -1,14 +1,19 @@
-from fastapi import Depends, HTTPException, status
-from jose import jwt
 from datetime import datetime, timedelta
+
+from core.api.deps import get_db
+from core.config import get_settings
+from core.internal.exceptions import (AccessTokenExpiredHTTPException,
+                                      CredentialsInvalidHTTPException,
+                                      InactiveUserHTTPException,
+                                      RefreshTokenInvalidHTTPException)
+from core.internal.user import get_user_by_username
 from core.models.auth import RefreshToken
 from core.models.user import UserModel
-from core.config import get_settings
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.api.deps import get_db
-from passlib.context import CryptContext
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from core.internal.user import get_user_by_username
+from jose import jwt
+from passlib.context import CryptContext
+from sqlalchemy.ext.asyncio import AsyncSession
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -59,48 +64,37 @@ async def create_access_token(db_session, data: dict):
 
 
 async def refresh_access_token(db_session, refresh_token):
-    default_exception_detail = "REFRESH_TOKEN_INVALID"
     try:
         payload = jwt.decode(refresh_token, get_settings(
         ).REFRESH_TOKEN_SECRET_KEY, algorithms=[get_settings().ALGORITHM])
         if await RefreshToken.get_by_uuid(db_session, payload['id']) is None:
-            default_exception_detail = "REFRESH_TOKEN_SESSION_EXPIRED"
-            raise Exception
+            raise RefreshTokenInvalidHTTPException()
         to_encode = {}
         to_encode.update({"sub": payload["sub"]})
     except:
-        # Precondition: Token needs to NOT be expired
-        raise HTTPException(
-            status_code=status.HTTP_412_PRECONDITION_FAILED,
-            detail=default_exception_detail,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    tokens = await create_access_token(db_session, to_encode)
-    return tokens
+        raise RefreshTokenInvalidHTTPException()
+    return await create_access_token(db_session, to_encode)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db_session: AsyncSession = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="CREDENTIALS_INVALID",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         payload = jwt.decode(token, get_settings().ACCESS_TOKEN_SECRET_KEY, algorithms=[
                              get_settings().ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            raise CredentialsInvalidHTTPException()
+    except CredentialsInvalidHTTPException as exc:
+        raise exc
     except:
-        raise credentials_exception
+        raise AccessTokenExpiredHTTPException()
     user = await get_user_by_username(db_session, username)
     if user is None:
-        raise credentials_exception
+        raise CredentialsInvalidHTTPException()
     return user
 
 
 async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
     print(current_user.disabled)
     if current_user.disabled:
-        raise HTTPException(status_code=400, detail="INACTIVE_USER")
+        raise InactiveUserHTTPException()
     return current_user

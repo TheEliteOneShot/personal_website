@@ -39,6 +39,26 @@ axios.interceptors.response.use((response) => {
 	return response;
 });
 
+// An HTTP request will 'await' this function.
+// This function will resolve when the access token has been refreshed.
+// 'pollInterval' is how long in milliseconds to recheck the status until resolved.
+const isTokenRefreshFinished = (pollInterval: number) => {
+	logging.debug(
+		`Request is checking for the token refresh to complete every ${pollInterval}ms`
+	);
+	return new Promise((resolve) => {
+		const interval = setInterval(() => {
+			if (!store.getters['auth/tokenIsRefreshing']) {
+				logging.debug(
+					`The request is done waiting.`
+				);
+				resolve(true);
+				clearInterval(interval);
+			}
+		}, pollInterval);
+	});
+};
+
 // Any status codes that falls outside the range of 2xx cause this function to trigger
 axios.interceptors.response.use(
 	(response) => response,
@@ -48,36 +68,51 @@ axios.interceptors.response.use(
 			logging.debug(`API ERROR: ${JSON.stringify(error)}`);
 
 		if (status === 401) {
-			if (store.getters['auth/isTokenBeingRefreshed']) {
-				const chained =
-					store.getters['auth/getTokenRefreshingCallbacks'].then(
-						error
+			if (error?.response?.data?.detail === 'REFRESH_TOKEN_INVALID') {
+				toast.error('Your session has expired. Please login again.');
+				logging.error(
+					'The refresh token was inactive, refreshing session.'
+				);
+				store.commit('auth/loggedOut', false);
+				router.push('/login');
+			} else if (
+				error?.response?.data?.detail === 'ACCESS_TOKEN_EXPIRED'
+			) {
+				if (store.getters['auth/tokenIsRefreshing']) {
+					return isTokenRefreshFinished(100).then(() =>
+						axios.request(error.config)
 					);
-				store.commit('auth/tokenSetRefreshingCallbackChain', chained);
-				return chained;
-			} else {
-				store.commit('auth/tokenRefreshStarted');
-				await axios
-					.post(
-						config.routes.authApi.refreshAccessToken,
-						{ refresh_token: store.getters['auth/refreshToken'] },
-						{
-							headers: {
-								'Content-Type': 'application/json',
+				} else {
+					store.commit('auth/tokenRefreshStarted');
+					return await axios
+						.post(
+							config.routes.authApi.refreshAccessToken,
+							{
+								refresh_token:
+									store.getters['auth/refreshToken'],
 							},
-						}
-					)
-					.then((response) => {
-						store.commit('auth/setTokens', response?.data);
-						store.commit('auth/tokenRefreshComplete');
-						return response;
-					});
-				return axios.request(error.config);
+							{
+								headers: {
+									'Content-Type': 'application/json',
+								},
+							}
+						)
+						.then((response) => {
+							store.commit('auth/setTokens', response?.data);
+							// Repeat original request
+							return axios.request(error.config);
+						})
+						.finally(() =>
+							store.commit('auth/tokenRefreshComplete')
+						);
+				}
 			}
 		} else {
-			// The backend currently sends 412 for a refresh token that is expired
 			if (status === 412) {
-				toast.error('Your sessire has expired. Please login again.');
+				toast.error('Your session has expired. Please login again.');
+				logging.error(
+					'The refresh token was inactive, refreshing session.'
+				);
 				store.commit('auth/loggedOut', false);
 				router.push('/login');
 			}

@@ -1,13 +1,16 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from core.api import authentication, healthcheck, user
 from core.config import get_settings
 from initialize_database import initialize_database
-import logging
 
-logging.basicConfig(level=get_settings().LOGGING_LEVEL) 
+logging.basicConfig(level=get_settings().LOGGING_LEVEL)
 
-app = FastAPI(title=get_settings().API_TILE, version=get_settings().API_VERSION)
+app = FastAPI(title=get_settings().API_TILE,
+              version=get_settings().API_VERSION)
 
 app.include_router(authentication)
 app.include_router(healthcheck)
@@ -21,9 +24,11 @@ app.add_middleware(
     allow_headers=get_settings().CORS_ALLOW_HEADERS,
 )
 
+
 @app.on_event("startup")
 async def startup_event():
     await initialize_database()
+
 
 @app.on_event("shutdown")
 async def shutdown_event():

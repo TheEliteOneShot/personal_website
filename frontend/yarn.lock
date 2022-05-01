@@ -2445,11 +2445,6 @@
     "lodash" "^4.17.21"
     "semver" "^7.3.5"
 
-"vue-plugin-load-script@^2.1.1":
-  "integrity" "sha512-IViO0hNj4O39M8I1taX74B5PR5RI7IrlEt+dvAjOk3NRLwQ7ZrdexUo9+K++KBzGPJtaVL1+emTyMWeOtjZojw=="
-  "resolved" "https://registry.npmjs.org/vue-plugin-load-script/-/vue-plugin-load-script-2.1.1.tgz"
-  "version" "2.1.1"
-
 "vue-router@^4.0.12":
   "integrity" "sha512-wAO6zF9zxA3u+7AkMPqw9LjoUCjSxfFvINQj3E/DceTt6uEz1XZLraDhdg2EYmvVwTBSGlLYsUw8bDmx0754Mw=="
   "resolved" "https://registry.npmjs.org/vue-router/-/vue-router-4.0.14.tgz"
