@@ -107,15 +107,6 @@ axios.interceptors.response.use(
 						);
 				}
 			}
-		} else {
-			if (status === 412) {
-				toast.error('Your session has expired. Please login again.');
-				logging.error(
-					'The refresh token was inactive, refreshing session.'
-				);
-				store.commit('auth/loggedOut', false);
-				router.push('/login');
-			}
 		}
 
 		return Promise.reject(error);
