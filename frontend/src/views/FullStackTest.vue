@@ -1,8 +1,5 @@
 <script>
 import {onMounted, defineComponent, getCurrentInstance, ref} from 'vue';
-import {loadScript} from 'vue-plugin-load-script';
-// @ts-ignore
-import agGridUrl from '@/assets/scripts/ag_grid_enterprise.min.js?url';
 
 export default defineComponent({
     name: 'FullStackTest',
