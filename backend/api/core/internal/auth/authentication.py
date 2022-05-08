@@ -53,7 +53,7 @@ async def create_access_token(db_session, data: dict):
     ).REFRESH_TOKEN_SECRET_KEY, algorithm=get_settings().ALGORITHM)
 
     access_token_expires_delta = timedelta(
-        seconds=1)
+        minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token_to_encode = data.copy()
     access_token_expires = datetime.utcnow() + access_token_expires_delta
     access_token_to_encode.update({"exp": access_token_expires})

@@ -7,3 +7,4 @@ RUN pipenv install
 
 EXPOSE 5000
 
+ENTRYPOINT ["pipenv", "run", "uvicorn", "main:app", "--port", "5000", "--host", "0.0.0.0","--log-level", "error"]
