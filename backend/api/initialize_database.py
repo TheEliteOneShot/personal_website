@@ -7,11 +7,14 @@ from core.models.user import UserModel
 
 
 async def initialize_database():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-        await create_users(conn)
-    await engine.dispose()
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+            await create_users(conn)
+        await engine.dispose()
+    except:
+        print('Could not initialize the database with dummy data')
     pass
 
 

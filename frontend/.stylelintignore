@@ -1,0 +1,13 @@
+# Ignore artifacts:
+build
+dist
+coverage
+node_modules
+public
+
+*.md
+generated-vars.sass
+generated-fallback.css
+ag_grid.min.css
+ag_theme_alpine_dark.min.css
+ag_theme_alpine.min.css

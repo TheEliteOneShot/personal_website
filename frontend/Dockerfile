@@ -1,35 +1,32 @@
-# build environment
-FROM node:15.5.1-alpine as build
+FROM bitnami/node:16 AS build
 WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
 
-# COPY package.json /app/package.json
-COPY package.json ./
-
-RUN npm install --silent 
-
-COPY .eslintrc.js ./
-COPY babel.config.js ./
-COPY . .
-
+ARG SITEMAP_HOST
+ARG VITE_API_BASE_URL
+ARG VITE_MAPBOX_ACCESS_TOKEN
 ARG BACKEND_PORT
 ARG BACKEND_HOST
 ARG BACKEND_PROTOCOL
 ARG BACKEND_PREFIX
-RUN echo "VITE_API_BASE_PROTOCOL=\"${BACKEND_PROTOCOL}\"" >> ./.env
-RUN echo "VITE_API_BASE_HOST=\"${BACKEND_HOST}\"" >> ./.env
-RUN echo "VITE_API_BASE_PORT=\"${BACKEND_PORT}\"" >> ./.env
-RUN echo "VITE_API_BASE_PREFIX=\"${BACKEND_PREFIX}\"" >> ./.env
 
-RUN npm run build
+COPY package.json ./
+COPY yarn.lock ./
+RUN CYPRESS_INSTALL_BINARY=0 yarn --frozen-lockfile
 
-# production environment
-FROM nginx:1.21.6-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY . .
+RUN SITEMAP_HOST=$SITEMAP_HOST \
+  VITE_API_BASE_URL=$VITE_API_BASE_URL \
+  VITE_MAPBOX_ACCESS_TOKEN=$VITE_MAPBOX_ACCESS_TOKEN \
+  VITE_API_BASE_HOST=$BACKEND_HOST \
+  VITE_API_BASE_PORT=$BACKEND_PORT \
+  VITE_API_BASE_PREFIX=$BACKEND_PREFIX \
+  VITE_API_BASE_PROTOCOL=$BACKEND_PROTOCOL \
+  SILENT=1 \
+  yarn run build
 
-RUN rm /etc/nginx/conf.d/default.conf
-RUN mkdir /etc/nginx/templates
-COPY nginx/production/templates/nginx.conf.template /etc/nginx/templates
+FROM bitnami/node:16-prod AS prod
+WORKDIR /app
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build /app .
+
+CMD ["yarn", "preview"]

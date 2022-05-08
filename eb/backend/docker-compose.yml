@@ -32,10 +32,6 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
       - database
-    logging:
-      driver: "local"
-    volumes:
-      - /backend_logs:/etc/docker
  
   reverseproxy:
     container_name: reverseproxy

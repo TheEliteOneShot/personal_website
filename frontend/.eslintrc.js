@@ -1,20 +1,56 @@
 module.exports = {
-    root: true,
-    env: { node: true },
-    // https://github.com/vuejs/vue-eslint-parser#parseroptionsparser
-    parser: "vue-eslint-parser",
-    parserOptions: {
-      parser: "@typescript-eslint/parser",
+  root: true,
+  env: {
+    browser: true,
+    node: true,
+  },
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+    tsconfigRootDir: __dirname,
+  },
+  extends: [
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:vue/vue3-recommended',
+    'plugin:vuejs-accessibility/recommended',
+    'prettier',
+  ],
+  plugins: ['@typescript-eslint', 'prettier-vue'],
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
+  },
+  overrides: [
+    {
+      files: ['*.md'],
+      parser: 'markdown-eslint-parser',
+      extends: ['plugin:md/recommended', 'prettier'],
     },
-    plugins: ["@typescript-eslint", "prettier"],
-    extends: [
-      "plugin:@typescript-eslint/recommended",
-      // https://github.com/vuejs/eslint-plugin-vue/blob/44ff0e02cd0fd08b8cd7dee0127dbb5590446323/docs/user-guide/README.md#conflict-with-prettier
-      "plugin:vue/vue3-recommended",
-      "prettier",
-    ],
-    rules: {
-      "prettier/prettier": "warn",
-      "semi": [2, "always"]
+    {
+      files: ['*.vue'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:vue/vue3-recommended',
+        'plugin:vuejs-accessibility/recommended',
+        'plugin:prettier-vue/recommended',
+        'prettier',
+      ],
+      rules: {
+        'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'vue/script-setup-uses-vars': 'error',
+        'vue/no-mutating-props': 'off',
+        'vue/multi-word-component-names': 'off',
+        'vue/require-prop-types': 'off',
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': ['error'],
+
+        'vuejs-accessibility/form-control-has-label': 'off',
+        'vuejs-accessibility/label-has-for': 'off',
+        'vuejs-accessibility/anchor-has-content': 'off',
+      },
     },
+  ],
 };

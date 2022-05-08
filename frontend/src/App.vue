@@ -1,111 +1,25 @@
-<script lang="ts">
-import "@/assets/scripts/navigation.js";
-import "@/assets/scripts/box.icons.min.js";
-import { defineComponent, computed } from "vue";
-import UserActionMenuDropdown from "@/components/UserActionMenuDropdown.vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+<script setup lang="ts">
+import { initDarkmode } from '/@src/stores/darkmode';
 
-export default defineComponent({
-  name: "RootComponent",
-  components: {
-    UserActionMenuDropdown,
-  },
-  setup() {
-    const store = useStore();
-    const router = useRouter();
-    const currentlyLoggedIn = computed(() => store.getters["auth/isLoggedIn"]);
+// This is the global app setup function
 
-    const logOut = async () => {
-      await store.dispatch("user/logout");
-    };
-
-    return {
-      currentlyLoggedIn,
-      logOut,
-    };
-  },
-});
+/**
+ * Initialize the darkmode watcher
+ *
+ * @see /@src/stores/darkmode
+ */
+initDarkmode();
 </script>
 
 <template>
   <div>
-    <header class="header" id="header">
-      <div class="header_toggle">
-        <i class="bx bx-menu" id="header-toggle"> </i>
-      </div>
-      <div class="header_img"><img src="/public/icon.png" /></div>
-      <div>
-        <UserActionMenuDropdown />
-      </div>
-    </header>
-    <div class="l-navbar" id="nav-bar">
-      <nav class="nav">
-        <div>
-          <router-link class="nav_link" to="/">
-            <i class="bx bx-book-bookmark nav_logo-icon"> </i>
-            <span class="nav_logo-name"> Zachary Laney </span>
-          </router-link>
-          <div class="nav_list">
-            <router-link class="nav_link" to="/Welcome">
-              <i class="bx bx-grid-alt nav_icon router-link-active"> </i>
-              <span class="nav_name"> Welcome Page </span>
-            </router-link>
-            <router-link class="nav_link" to="/authtest">
-              <i class="bx bx-data nav_icon"> </i>
-              <span class="nav_name"> Auth Test </span>
-            </router-link>
-          </div>
-        </div>
-
-        <a @click="logOut" href="#" class="nav_link" v-if="currentlyLoggedIn">
-          <i class="bx bx-log-out nav_icon"> </i>
-          <span class="nav_name"> Sign Out </span>
-        </a>
-      </nav>
-    </div>
-
-    <body id="body-pd">
-      <div class="content-container bg-light">
-        <router-view v-slot="{ Component }">
-          <keep-alive include="AuthTest">
-            <component :is="Component" />
-          </keep-alive>
-        </router-view>
-      </div>
-    </body>
+    <Suspense>
+      <RouterView v-slot="{ Component }">
+        <Transition name="fade-slow" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </RouterView>
+    </Suspense>
+    <VReloadPrompt app-name="Vuero" />
   </div>
 </template>
-
-<style>
-@import "mdb-vue-ui-kit/css/mdb.min.css";
-@import "@/assets/styles/navigation.css";
-@import "@/assets/styles/box_icons/box.icons.min.css";
-@import "@/assets/styles/ag_grid/ag_grid.min.css";
-
-.active {
-  color: black;
-}
-
-.modal-header .btn-close {
-  visibility: hidden;
-}
-.form-control {
-  margin-bottom: 0px !important;
-}
-
-.noselect {
-  -webkit-touch-callout: none;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Safari */
-  -khtml-user-select: none;
-  /* Konqueror HTML */
-  -moz-user-select: none;
-  /* Old versions of Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-}
-</style>

@@ -39,7 +39,7 @@ async def login_user(db_session, user: LoginUserSchema):
         if await auth.verify_password(user.password, foundUser.password):
             return True
     raise BadRequestHTTPException(
-        detail="INVALID_CREDENTIALS"
+        msg="INVALID_CREDENTIALS"
     )
 
 async def logout_user(db_session, username: str):

@@ -1,23 +1,38 @@
 {
   "compilerOptions": {
-    "noImplicitAny": false,
-    "removeComments": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "target": "esnext",
-    "useDefineForClassFields": true,
-    "module": "es2022",
-    "moduleResolution": "Node",
-    "isolatedModules": true,
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "lib": ["esnext", "dom"],
+    "types": [
+      "vite/client",
+      "vite-plugin-pwa/client",
+      "vite-plugin-pages/client",
+      "@intlify/vite-plugin-vue-i18n/client"
+    ],
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-    "skipLibCheck": true
+      "/@src/*": ["./src/*"]
+    }
   },
-  "include": ["vite.config.*", "env.d.ts", "src/**/*", "src/**/*.vue"]
+  "include": [
+    "components.d.ts",
+    "components-global.d.ts",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "documentation/**/*.md"
+  ],
+  "exclude": ["bulma-colors.ts"]
 }

@@ -15,6 +15,8 @@ router = APIRouter(prefix=API_PREFIX)
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=TokenSchema)
 async def login(payload: LoginUserSchema, db_session=Depends(get_db)):
+    print('here')
+    print(payload)
     await login_user(db_session, payload)
     tokens = await create_access_token(db_session, data={"sub": payload.credential})
     return {"access_token": tokens["access_token"], "refresh_token": tokens["refresh_token"], "token_type": "bearer"}
@@ -45,7 +47,7 @@ async def delete(username: str, db_session=Depends(get_db), user: UserSchema = D
         return {"detail": "USERNAME_DOES_NOT_EXIST"}
 
 
-@router.get("/me/", response_model=UserResponse)
+@router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: UserSchema = Depends(get_current_active_user)):
     return current_user
 

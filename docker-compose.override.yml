@@ -16,7 +16,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: DockerfileDev
+      dockerfile: Dockerfile
       args:
         # Development
         BACKEND_PORT: ${REVERSEPROXY_PORT}
