@@ -32,8 +32,6 @@ services:
     restart: always
     networks:
       - backend
-    volumes:
-      - ./backend/api:/api/
     environment:
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_HOST: ${DATABASE_HOST}
@@ -73,7 +71,6 @@ services:
         BACKEND_PREFIX: ${BACKEND_PREFIX}
         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
         VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
-  
     environment:
       ORIGIN_DOMAIN: ${ORIGIN_DOMAIN}
     image: theeliteoneshot/website-frontend:latest

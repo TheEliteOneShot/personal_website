@@ -5,8 +5,9 @@ networks:
 
 services:
 
-  # backend:
-  #   command: ["pipenv", "run", "uvicorn", "main:app", "--port", "5000", "--reload", "--host", "0.0.0.0","--log-level", "debug"]
+  backend:
+      volumes:
+      - ./backend/api:/api/
   
   reverseproxy:
     build:
