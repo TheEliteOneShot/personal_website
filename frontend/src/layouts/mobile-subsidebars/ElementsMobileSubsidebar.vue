@@ -8,13 +8,13 @@
       <ul class="submenu" data-simplebar>
         <VCollapseLinks>
           <template #header>
-            Personal
+            Tests
             <i aria-hidden="true" class="iconify" data-icon="feather:chevron-right" />
           </template>
 
           <RouterLink :to="{ name: 'other' }" class="is-submenu">
             <i aria-hidden="true" class="lnil lnil-home"></i>
-            <span>Other</span>
+            <span>Auth Test</span>
           </RouterLink>
         </VCollapseLinks>
       </ul>

@@ -32,7 +32,7 @@ export default defineConfig({
   // base: '/my-subdirectory/',
   base: '/',
   // Directory to serve as plain static assets.
-  publicDir: 'public',
+  // publicDir: 'public',
   // Adjust console output verbosity.
   logLevel: SILENT ? 'error' : 'info',
   /**
@@ -208,12 +208,12 @@ export default defineConfig({
      *
      * @see https://github.com/stafyniaksacha/vite-plugin-radar
      */
-    ViteRadar({
-      enableDev: true,
-      gtm: {
-        id: 'GTM-N9P6H6B',
-      },
-    }),
+    // ViteRadar({
+    //   enableDev: true,
+    //   gtm: {
+    //     id: 'GTM-N9P6H6B',
+    //   },
+    // }),
 
     /**
      * vite-plugin-pwa generate manifest.json and register services worker to enable PWA

@@ -36,7 +36,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: `${t('page-title')} - Vuero`,
+  title: `${t('page-title')}`,
   meta: [
     {
       name: 'robots',

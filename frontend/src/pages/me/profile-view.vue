@@ -7,7 +7,7 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle('Profile View');
 
 useHead({
-  title: 'Profile View - Sidebar - Vuero',
+  title: 'Profile View',
 });
 </script>
 

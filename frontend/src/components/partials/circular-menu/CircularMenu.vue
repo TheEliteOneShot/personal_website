@@ -66,7 +66,7 @@ const localFlagSrc = computed(() => {
           <span></span>
         </label>
       </div>
-      <a
+      <!-- <a
         class="menu-item is-flex right-panel-trigger"
         tabindex="0"
         @keydown.space.prevent="panels.setActive('languages')"
@@ -84,7 +84,7 @@ const localFlagSrc = computed(() => {
         @click="panels.setActive('activity')"
       >
         <i aria-hidden="true" class="iconify" data-icon="feather:grid"></i>
-      </a>
+      </a> -->
     </div>
   </div>
 </template>

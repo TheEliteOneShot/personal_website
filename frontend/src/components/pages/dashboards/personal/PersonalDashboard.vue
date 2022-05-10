@@ -124,7 +124,7 @@ const userSession = useUserSession();
           <div class="dashboard-card is-upgrade">
             <i aria-hidden="true" class="lnil lnil-crown-alt-1"></i>
             <div class="cta-content">
-              <h4>Hey Zachary, you're doing great.</h4>
+              <h4>Hey {{ userSession?.user?.username }}, you're doing great.</h4>
               <p class="white-text">Start using our team and project management tools</p>
               <a class="link inverted-text">Learn More</a>
             </div>

@@ -47,7 +47,7 @@ export default defineComponent({
         'ag-theme-alpine-dark': darkmode.isDark,
         'ag-theme-alpine': !darkmode.isDark,
       }"
-      style="height: 600px; width: auto"
+      style="height: 600px; width: 100"
       class=""
     ></div>
   </div>

@@ -30,8 +30,8 @@ const gridServerDataSource = async () => {
 
 const gridServerDataOptions = {
   columnDefs: [
-    { field: 'owner', minWidth: 220 },
-    { field: 'description', minWidth: 200 },
+    { field: 'owner', mindWidth: 50, flex: 1 },
+    { field: 'description', flex: 2, minWidth: 500 },
   ],
   defaultColDef: {
     sortable: true,

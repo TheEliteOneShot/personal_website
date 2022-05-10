@@ -5,7 +5,7 @@ const emit = defineEmits(['close']);
 <template>
   <div class="sidebar-panel is-generic">
     <div class="subpanel-header">
-      <h3 class="no-mb">Other Things</h3>
+      <h3 class="no-mb">Tests</h3>
       <div
         class="panel-close"
         tabindex="0"
@@ -20,7 +20,7 @@ const emit = defineEmits(['close']);
         <li>
           <RouterLink :to="{ name: 'other' }">
             <i aria-hidden="true" class="lnil lnil-table pr-2"></i>
-            Other
+            Auth Test
           </RouterLink>
         </li>
       </ul>

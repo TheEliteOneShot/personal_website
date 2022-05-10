@@ -4,7 +4,6 @@
       <!--Title-->
       <div class="section-title has-text-centered">
         <h2 class="title is-2">Impecable UI/UX</h2>
-        <h4>Vuero has been carefully handcrafted.</h4>
       </div>
 
       <div class="centered-mockup-wrapper">

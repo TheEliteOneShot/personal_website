@@ -7,7 +7,7 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle('Profile Settings');
 
 useHead({
-  title: 'Profile Settings - Sidebar - Vuero',
+  title: 'Profile Settings',
 });
 </script>
 

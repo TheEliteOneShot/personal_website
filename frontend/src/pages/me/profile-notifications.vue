@@ -7,7 +7,7 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle('Profile Notifications');
 
 useHead({
-  title: 'Profile Notifications - Sidebar - Vuero',
+  title: 'Profile Notifications',
 });
 </script>
 
