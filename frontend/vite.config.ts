@@ -32,7 +32,7 @@ export default defineConfig({
   // base: '/my-subdirectory/',
   base: '/',
   // Directory to serve as plain static assets.
-  // publicDir: 'public',
+  publicDir: 'public',
   // Adjust console output verbosity.
   logLevel: SILENT ? 'error' : 'info',
   /**
