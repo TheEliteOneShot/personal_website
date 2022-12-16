@@ -1,7 +1,8 @@
-Backend in FASTAPI
-Frontend in VueJS3 with a Premium Template
+Backend in FASTAPI.
+Frontend in VueJS3 with a Premium Template.
 
 Docker Ready.
+Added a Reverse Proxy to hide the Backend.
 
 Personally wrote the Frontend and Backend implementation including:
 Account Creation
@@ -12,4 +13,4 @@ Access Token
 Refresh Token
 Database Integration
 
-Customized several VueJS3 templates
+Customized several VueJS3 templates.
