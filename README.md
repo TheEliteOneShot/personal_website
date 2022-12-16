@@ -1,3 +1,15 @@
-# Description
+Backend in FASTAPI
+Frontend in VueJS3 with a Premimum Template.
 
-The code for my website as I build a containerized full stack web application with Docker and Amazon Elastic Beanstalk. 
+Docker Ready.
+
+Personally wrote the Frontend and Backend implementation including:
+Account Creation
+Login
+Authentication
+Authorization
+Access Token
+Refresh Token
+Database Integration
+
+Customized several VueJS3 templates
