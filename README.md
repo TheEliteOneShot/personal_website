@@ -1,5 +1,5 @@
 Backend in FASTAPI
-Frontend in VueJS3 with a Premimum Template.
+Frontend in VueJS3 with a Premium Template
 
 Docker Ready.
 
